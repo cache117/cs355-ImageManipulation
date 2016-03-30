@@ -18,7 +18,6 @@ public class Drawable3DLine
     private Point2D.Double start;
     private Point2D.Double end;
     private boolean drawable;
-//    private
 
     public Drawable3DLine(Color color, Point3D start, Point3D end, Matrix objectMatrix, Matrix cameraMatrix)
     {
