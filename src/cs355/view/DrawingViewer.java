@@ -7,13 +7,11 @@ import cs355.model.drawing.Shape;
 import cs355.model.image.CS355Image;
 import cs355.model.scene.*;
 import cs355.view.drawing.Drawable3DLine;
-import cs355.view.drawing.DrawableLine;
 import cs355.view.drawing.DrawableNullShape;
 import cs355.view.drawing.DrawableShape;
 import cs355.view.drawing.util.DrawableShapeFactory;
 import cs355.view.drawing.util.Matrix;
 import cs355.view.drawing.util.Transform;
-import cs355.view.drawing.util.Vector3D;
 
 import java.awt.*;
 import java.awt.geom.Point2D;

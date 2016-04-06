@@ -1,8 +1,4 @@
-package cs355.view;
-
-import cs355.GUIFunctions;
-import cs355.model.scene.CS355Scene;
-import cs355.model.scene.Point3D;
+package cs355.model.scene;
 
 import java.util.logging.Logger;
 
@@ -16,10 +12,8 @@ import static java.lang.Math.cos;
 public class VirtualCamera
 {
     private static final Logger LOGGER = Logger.getLogger(VirtualCamera.class.getName());
-    //private static final float ASPECT = (LWJGLSandbox.DISPLAY_WIDTH / LWJGLSandbox.DISPLAY_HEIGHT);
     private static final float UNIT = 1.0f;
     private static final float FOVY = 60f, CLIPPING = FOVY / 2.0f;
-    private static final float Z_NEAR = 1, Z_FAR = 200;
 
     private final Point3D cameraLocation;
     private double rotation;

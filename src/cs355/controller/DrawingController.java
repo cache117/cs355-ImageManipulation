@@ -118,7 +118,7 @@ public class DrawingController implements CS355Controller, MouseListener, MouseM
     public void openScene(File file)
     {
         if (scene.open(file))
-            scene.notifyObservers();
+            GUIFunctions.refresh();
         else
             GUIFunctions.printf("Opening Scene failed");
     }
@@ -311,6 +311,9 @@ public class DrawingController implements CS355Controller, MouseListener, MouseM
 
         this.scene.deleteObservers();
         this.scene.addObserver(view);
+
+        this.image.deleteObservers();
+        this.image.addObserver(view);
     }
 
     public ViewRefresher getView()
