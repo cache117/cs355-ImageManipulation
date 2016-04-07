@@ -139,13 +139,13 @@ public class DrawingController implements CS355Controller, MouseListener, MouseM
     @Override
     public void openImage(File file)
     {
-
+        image.open(file);
     }
 
     @Override
     public void saveImage(File file)
     {
-
+        image.save(file);
     }
 
     @Override
@@ -175,43 +175,43 @@ public class DrawingController implements CS355Controller, MouseListener, MouseM
     @Override
     public void doEdgeDetection()
     {
-
+        image.edgeDetection();
     }
 
     @Override
     public void doSharpen()
     {
-
+        image.sharpen();
     }
 
     @Override
     public void doMedianBlur()
     {
-
+        image.medianBlur();
     }
 
     @Override
     public void doUniformBlur()
     {
-
+        image.uniformBlur();
     }
 
     @Override
     public void doGrayscale()
     {
-
+        image.grayscale();
     }
 
     @Override
     public void doChangeContrast(int contrastAmountNum)
     {
-
+        image.contrast(contrastAmountNum);
     }
 
     @Override
     public void doChangeBrightness(int brightnessAmountNum)
     {
-
+        image.brightness(brightnessAmountNum);
     }
 
     @Override

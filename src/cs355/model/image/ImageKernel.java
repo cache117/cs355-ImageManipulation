@@ -14,7 +14,7 @@ public class ImageKernel
 
     private final ArrayList<int[]> pixels;
 
-    private ImageKernel(int[] m00, int[] m10, int[] m20,
+    public ImageKernel(int[] m00, int[] m10, int[] m20,
                         int[] m01, int[] m11, int[] m21,
                         int[] m02, int[] m12, int[] m22)
     {
@@ -55,14 +55,11 @@ public class ImageKernel
         return colorChannel;
     }
 
-    public static int[] noiseRemoval_MedianFilter(int[] m00, int[] m10, int[] m20,
-                                                  int[] m01, int[] m11, int[] m21,
-                                                  int[] m02, int[] m12, int[] m22)
+    public int[] medianBlur()
     {
-        ImageKernel imageKernel = new ImageKernel(m00, m10, m20, m01, m11, m21, m02, m12, m22);
-        int redMedian = imageKernel.getMedianValue(imageKernel.getColorChannel(RED));
-        int greenMedian = imageKernel.getMedianValue(imageKernel.getColorChannel(GREEN));
-        int blueMedian = imageKernel.getMedianValue(imageKernel.getColorChannel(BLUE));
+        int redMedian = getMedianValue(getColorChannel(RED));
+        int greenMedian = getMedianValue(getColorChannel(GREEN));
+        int blueMedian = getMedianValue(getColorChannel(BLUE));
         return new int[] {redMedian, greenMedian, blueMedian};
     }
 
@@ -73,9 +70,9 @@ public class ImageKernel
         return colorChannel.get(medianIndex);
     }
 
-    public static int[] gradientMagnitude(int[] m00, int[] m10, int[] m20,
-                                    int[] m01, int[] m11, int[] m21,
-                                    int[] m02, int[] m12, int[] m22)
+    public static int[] edgeDetection(int[] m00, int[] m10, int[] m20,
+                                      int[] m01, int[] m11, int[] m21,
+                                      int[] m02, int[] m12, int[] m22)
     {
         int[] sobelX = sobelKernelX(m00, m10, m20, m02, m12, m22);
         int[] sobelY = sobelKernelY(m00, m20, m01, m21, m02, m22);
@@ -111,14 +108,14 @@ public class ImageKernel
         return new int[] {red,  green, blue};
     }
 
-    public static int[] brightnessAdjustment(int[] m00, int[] m10, int[] m20,
+    public static int[] brightness(int[] m00, int[] m10, int[] m20,
                             int[] m01, int[] m11, int[] m21,
                             int[] m02, int[] m12, int[] m22)
     {
         return null;
     }
 
-    public static int[] contrastAdjustment(int[] m00, int[] m10, int[] m20,
+    public static int[] contrast(int[] m00, int[] m10, int[] m20,
                             int[] m01, int[] m11, int[] m21,
                             int[] m02, int[] m12, int[] m22)
     {
