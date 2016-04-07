@@ -15,11 +15,12 @@ public class DrawingImage extends CS355Image
     {
         BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         WritableRaster raster = image.getRaster();
+        int[] rgb = new int[3];
         for (int y = 0; y < getHeight(); y++)
         {
             for (int x = 0; x < getWidth(); x++)
             {
-                int[] rgb = getPixel(x, y, new int[3]);
+                getPixel(x, y, rgb);
                 raster.setPixel(x, y, rgb);
             }
         }
@@ -74,7 +75,7 @@ public class DrawingImage extends CS355Image
     @Override
     public void brightness(int amount)
     {
-        float brightnessAmount = amount / 100f;
+        float brightness = amount / 100f;
         int[] rgb = new int[3];
         float[] hsb = new float[3];
         for (int y = 0; y < getHeight(); y++)
@@ -84,8 +85,7 @@ public class DrawingImage extends CS355Image
                 getPixel(x, y, rgb);
                 Color.RGBtoHSB(rgb[0], rgb[1], rgb[2], hsb);
 
-                float newBrightness = hsb[2] + brightnessAmount;
-                hsb[2] = newBrightness;
+                hsb[2] += brightness;
 
                 Color c = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
                 rgb[0] = c.getRed();

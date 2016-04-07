@@ -60,7 +60,7 @@ public class ImageKernel
         int redMedian = getMedianValue(getColorChannel(RED));
         int greenMedian = getMedianValue(getColorChannel(GREEN));
         int blueMedian = getMedianValue(getColorChannel(BLUE));
-        return new int[] {redMedian, greenMedian, blueMedian};
+        return new int[] { redMedian, greenMedian, blueMedian };
     }
 
     private int getMedianValue(List<Integer> colorChannel)
@@ -70,70 +70,40 @@ public class ImageKernel
         return colorChannel.get(medianIndex);
     }
 
-    public static int[] edgeDetection(int[] m00, int[] m10, int[] m20,
-                                      int[] m01, int[] m11, int[] m21,
-                                      int[] m02, int[] m12, int[] m22)
+    public int[] edgeDetection()
     {
-        int[] sobelX = sobelKernelX(m00, m10, m20, m02, m12, m22);
-        int[] sobelY = sobelKernelY(m00, m20, m01, m21, m02, m22);
+        float[] sobelX = sobelKernelX(getM00(), getM10(), getM20(), getM02(), getM12(), getM22());
+        float[] sobelY = sobelKernelY(getM00(), getM20(), getM01(), getM21(), getM02(),getM22());
         int red = (int) Math.sqrt(square(sobelX[RED]) + square(sobelY[RED]));
         int green = (int) Math.sqrt(square(sobelX[GREEN]) + square(sobelY[GREEN]));
         int blue = (int) Math.sqrt(square(sobelX[BLUE]) + square(sobelY[BLUE]));
-        return new int[] {red, green, blue};
+        return new int[] { red, green, blue };
     }
 
-    private static int square(int number)
+    private static float square(float number)
     {
-        return (int) Math.pow(number, 2);
+        return (float) Math.pow(number, 2);
     }
 
-    private static int[] sobelKernelX(
+    private static float[] sobelKernelX(
             int[] m00, int[] m10, int[] m20,
             int[] m02, int[] m12, int[] m22)
     {
-        int red = (-1 * m00[RED]) + (-2 * m10[RED]) + (-1 * m20[RED]) + m02[RED] + (2 * m12[RED]) + m22[RED];
-        int green = (-1 * m00[GREEN]) + (-2 * m10[GREEN]) + (-1 * m20[GREEN]) + m02[GREEN] + (2 * m12[GREEN]) + m22[GREEN];
-        int blue = (-1 * m00[BLUE]) + (-2 * m10[BLUE]) + (-1 * m20[BLUE]) + m02[BLUE] + (2 * m12[BLUE]) + m22[BLUE];
-        return new int[] {red,  green, blue};
+        float red = ((-1 * m00[RED]) + (-2 * m10[RED]) + (-1 * m20[RED]) + m02[RED] + (2 * m12[RED]) + m22[RED]) / 8f;
+        float green = ((-1 * m00[GREEN]) + (-2 * m10[GREEN]) + (-1 * m20[GREEN]) + m02[GREEN] + (2 * m12[GREEN]) + m22[GREEN]) / 8f;
+        float blue = ((-1 * m00[BLUE]) + (-2 * m10[BLUE]) + (-1 * m20[BLUE]) + m02[BLUE] + (2 * m12[BLUE]) + m22[BLUE]) / 8f;
+        return new float[] { red,  green, blue };
     }
 
-    private static int[] sobelKernelY(
+    private static float[] sobelKernelY(
             int[] m00, int[] m20,
             int[] m01, int[] m21,
             int[] m02, int[] m22)
     {
-        int red = (-1 * m00[RED]) + (-2 * m01[RED]) + (-1 * m02[RED]) + m20[RED] + (2 * m21[RED]) + m22[RED];
-        int green = (-1 * m00[GREEN]) + (-2 * m01[GREEN]) + (-1 * m02[GREEN]) + m20[GREEN] + (2 * m21[GREEN]) + m22[GREEN];
-        int blue = (-1 * m00[BLUE]) + (-2 * m01[BLUE]) + (-1 * m02[BLUE]) + m20[BLUE] + (2 * m21[BLUE]) + m22[BLUE];
-        return new int[] {red,  green, blue};
-    }
-
-    public static int[] brightness(int[] m00, int[] m10, int[] m20,
-                            int[] m01, int[] m11, int[] m21,
-                            int[] m02, int[] m12, int[] m22)
-    {
-        return null;
-    }
-
-    public static int[] contrast(int[] m00, int[] m10, int[] m20,
-                            int[] m01, int[] m11, int[] m21,
-                            int[] m02, int[] m12, int[] m22)
-    {
-        return null;
-    }
-
-    public static int[] blur(int[] m00, int[] m10, int[] m20,
-                            int[] m01, int[] m11, int[] m21,
-                            int[] m02, int[] m12, int[] m22)
-    {
-        return null;
-    }
-
-    public static int[] unsharpMasking(int[] m00, int[] m10, int[] m20,
-                            int[] m01, int[] m11, int[] m21,
-                            int[] m02, int[] m12, int[] m22)
-    {
-        return null;
+        float red = ((-1 * m00[RED]) + (-2 * m01[RED]) + (-1 * m02[RED]) + m20[RED] + (2 * m21[RED]) + m22[RED]) / 8f;
+        float green = ((-1 * m00[GREEN]) + (-2 * m01[GREEN]) + (-1 * m02[GREEN]) + m20[GREEN] + (2 * m21[GREEN]) + m22[GREEN]) / 8f;
+        float blue = ((-1 * m00[BLUE]) + (-2 * m01[BLUE]) + (-1 * m02[BLUE]) + m20[BLUE] + (2 * m21[BLUE]) + m22[BLUE]) / 8f;
+        return new float[] { red,  green, blue };
     }
 
     public int[] getM00()
