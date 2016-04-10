@@ -1,10 +1,9 @@
 package cs355.model.drawing;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import cs355.view.DrawingViewer;
+
+import java.util.*;
 
 /**
  * Created by cstaheli on 1/7/2016.
@@ -143,5 +142,13 @@ public class DrawingModel extends CS355Drawing
     public void notifyObservers()
     {
         this.notifyObservers(null);
+    }
+
+    @Override
+    public synchronized void addObserver(Observer o)
+    {
+        super.addObserver(o);
+        if (o instanceof DrawingViewer)
+            ((DrawingViewer) o).setDrawing(this);
     }
 }

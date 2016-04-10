@@ -36,19 +36,19 @@ public class ImageKernel
         switch (colorType)
         {
             case RED:
-                index = 0;
+                index = RED;
                 break;
             case GREEN:
-                index = 1;
+                index = GREEN;
                 break;
             case BLUE:
-                index = 2;
+                index = BLUE;
                 break;
             default:
                 assert false;
         }
         List<Integer> colorChannel = new ArrayList<>();
-        for (int i = 0; i < pixels.size(); i++)
+        for (int i = 0; i < pixels.size(); ++i)
         {
             colorChannel.add(pixels.get(i)[index]);
         }
@@ -70,6 +70,24 @@ public class ImageKernel
         return colorChannel.get(medianIndex);
     }
 
+    public int[] uniformBlur()
+    {
+        int redMean = getMeanValue(getColorChannel(RED));
+        int greenMean = getMeanValue(getColorChannel(GREEN));
+        int blueMean = getMeanValue(getColorChannel(BLUE));
+        return new int[] {redMean, greenMean, blueMean};
+    }
+
+    private int getMeanValue(List<Integer> colorChannel)
+    {
+        int total = 0;
+        for (Integer each: colorChannel)
+        {
+            total += each;
+        }
+        return (int) Math.round(total / 9d);
+    }
+
     public int[] edgeDetection()
     {
         float[] sobelX = sobelKernelX(getM00(), getM10(), getM20(), getM02(), getM12(), getM22());
@@ -86,16 +104,6 @@ public class ImageKernel
     }
 
     private static float[] sobelKernelX(
-            int[] m00, int[] m10, int[] m20,
-            int[] m02, int[] m12, int[] m22)
-    {
-        float red = ((-1 * m00[RED]) + (-2 * m10[RED]) + (-1 * m20[RED]) + m02[RED] + (2 * m12[RED]) + m22[RED]) / 8f;
-        float green = ((-1 * m00[GREEN]) + (-2 * m10[GREEN]) + (-1 * m20[GREEN]) + m02[GREEN] + (2 * m12[GREEN]) + m22[GREEN]) / 8f;
-        float blue = ((-1 * m00[BLUE]) + (-2 * m10[BLUE]) + (-1 * m20[BLUE]) + m02[BLUE] + (2 * m12[BLUE]) + m22[BLUE]) / 8f;
-        return new float[] { red,  green, blue };
-    }
-
-    private static float[] sobelKernelY(
             int[] m00, int[] m20,
             int[] m01, int[] m21,
             int[] m02, int[] m22)
@@ -103,7 +111,17 @@ public class ImageKernel
         float red = ((-1 * m00[RED]) + (-2 * m01[RED]) + (-1 * m02[RED]) + m20[RED] + (2 * m21[RED]) + m22[RED]) / 8f;
         float green = ((-1 * m00[GREEN]) + (-2 * m01[GREEN]) + (-1 * m02[GREEN]) + m20[GREEN] + (2 * m21[GREEN]) + m22[GREEN]) / 8f;
         float blue = ((-1 * m00[BLUE]) + (-2 * m01[BLUE]) + (-1 * m02[BLUE]) + m20[BLUE] + (2 * m21[BLUE]) + m22[BLUE]) / 8f;
-        return new float[] { red,  green, blue };
+        return new float[] { red, green, blue };
+    }
+
+    private static float[] sobelKernelY(
+            int[] m00, int[] m10, int[] m20,
+            int[] m02, int[] m12, int[] m22)
+    {
+        float red = ((-1 * m00[RED]) + (-2 * m10[RED]) + (-1 * m20[RED]) + m02[RED] + (2 * m12[RED]) + m22[RED]) / 8f;
+        float green = ((-1 * m00[GREEN]) + (-2 * m10[GREEN]) + (-1 * m20[GREEN]) + m02[GREEN] + (2 * m12[GREEN]) + m22[GREEN]) / 8f;
+        float blue = ((-1 * m00[BLUE]) + (-2 * m10[BLUE]) + (-1 * m20[BLUE]) + m02[BLUE] + (2 * m12[BLUE]) + m22[BLUE]) / 8f;
+        return new float[] { red, green, blue };
     }
 
     public int[] getM00()

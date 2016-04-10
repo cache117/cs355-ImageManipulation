@@ -145,7 +145,7 @@ public class Transform
         return affineTransform;
     }
 
-    private static AffineTransform buildWorldToViewTransformation(ViewportParameters viewportParameters)
+    public static AffineTransform buildWorldToViewTransformation(ViewportParameters viewportParameters)
     {
         AffineTransform affineTransform = buildScalingTransform(viewportParameters.scalingFactor);
         affineTransform.concatenate(buildTranslationTransform(-viewportParameters.upperLeft.x, -viewportParameters.upperLeft.y));

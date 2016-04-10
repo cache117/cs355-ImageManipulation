@@ -28,8 +28,8 @@ public class DrawingController implements CS355Controller, MouseListener, MouseM
     private ViewRefresher view;
     private DrawingState state;
     private final CS355Drawing model;
-    private CS355Scene scene;
-    private CS355Image image;
+    private final CS355Scene scene;
+    private final CS355Image image;
 
     public DrawingController()
     {
@@ -38,6 +38,12 @@ public class DrawingController implements CS355Controller, MouseListener, MouseM
         state.setColor(Color.WHITE, model);
         scene = new CS355Scene();
         image = new DrawingImage();
+    }
+
+    private void setupData()
+    {
+        openImage(new File("./images/SLC.jpg"));
+        openScene(new File("./scenes/Street.scn"));
     }
 
     /* begin CS355Controller methods */
@@ -128,6 +134,7 @@ public class DrawingController implements CS355Controller, MouseListener, MouseM
     {
         ((DrawingViewer) view).toggle3DModelDisplay();
         GUIFunctions.refresh();
+        this.setupData();
     }
 
     @Override
@@ -151,7 +158,7 @@ public class DrawingController implements CS355Controller, MouseListener, MouseM
     @Override
     public void toggleBackgroundDisplay()
     {
-
+        ((DrawingImage)image).toggleBackgroundDisplay();
     }
 
     @Override

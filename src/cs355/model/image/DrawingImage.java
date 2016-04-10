@@ -1,36 +1,60 @@
 package cs355.model.image;
 
+import cs355.view.DrawingViewer;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
+import java.util.Observer;
 
 /**
  * Created by cstaheli on 3/30/2016.
  */
 public class DrawingImage extends CS355Image
 {
+    private static final int HSB_HUE = 0, HSB_SATURATION = 1, HSB_BRIGHTNESS = 2;
+    private static final int RGB_RED = 0, RGB_GREEN = 1, RGB_BLUE = 2;
+    private boolean drawImage;
+
+    public DrawingImage()
+    {
+        super();
+        this.drawImage = false;
+    }
+
     @Override
     public BufferedImage getImage()
     {
-        BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-        WritableRaster raster = image.getRaster();
-        int[] rgb = new int[3];
-        for (int y = 0; y < getHeight(); y++)
+        if (drawImage)
         {
-            for (int x = 0; x < getWidth(); x++)
+            BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+            WritableRaster raster = image.getRaster();
+            int[] rgb = new int[3];
+            for (int y = 0; y < getHeight(); ++y)
             {
-                getPixel(x, y, rgb);
-                raster.setPixel(x, y, rgb);
+                for (int x = 0; x < getWidth(); ++x)
+                {
+                    getPixel(x, y, rgb);
+                    raster.setPixel(x, y, rgb);
+                }
             }
-        }
-        return image;
+            return image;
+        } else
+            return null;
     }
 
     @Override
     public void edgeDetection()
     {
-        this.notifyObservers();
+        for (int y = 1; y < getHeight() - 1; ++y)
+        {
+            for (int x = 1; x < getWidth() - 1; ++x)
+            {
+                ImageKernel imageKernel = getSurroundingPixels(x, y);
+                int[] newPixels = imageKernel.edgeDetection();
+                setPixel(x, y, newPixels);
+            }
+        }
     }
 
     @Override
@@ -42,9 +66,9 @@ public class DrawingImage extends CS355Image
     @Override
     public void medianBlur()
     {
-        for (int y = 0; y < getHeight(); y++)
+        for (int y = 1; y < getHeight() - 1; ++y)
         {
-            for (int x = 0; x < getWidth(); x++)
+            for (int x = 1; x < getWidth() - 1; ++x)
             {
                 ImageKernel imageKernel = getSurroundingPixels(x, y);
                 int[] newPixels = imageKernel.medianBlur();
@@ -57,12 +81,30 @@ public class DrawingImage extends CS355Image
     @Override
     public void uniformBlur()
     {
+        for (int y = 1; y < getHeight() - 1; ++y)
+        {
+            for (int x = 1; x < getWidth() - 1; ++x)
+            {
+                ImageKernel imageKernel = getSurroundingPixels(x, y);
+                int[] newPixels = imageKernel.uniformBlur();
+                setPixel(x, y, newPixels);
+            }
+        }
         this.notifyObservers();
     }
 
     @Override
     public void grayscale()
     {
+        for (int y = 0; y < getHeight(); ++y)
+        {
+            for (int x = 0; x < getWidth(); ++x)
+            {
+                float[] hsb = getPixelHSB(x, y);
+                hsb[HSB_SATURATION] = 0;
+                setPixelHSB(x, y, hsb);
+            }
+        }
         this.notifyObservers();
     }
 
@@ -76,25 +118,35 @@ public class DrawingImage extends CS355Image
     public void brightness(int amount)
     {
         float brightness = amount / 100f;
-        int[] rgb = new int[3];
-        float[] hsb = new float[3];
-        for (int y = 0; y < getHeight(); y++)
+        for (int y = 0; y < getHeight(); ++y)
         {
-            for (int x = 0; x < getWidth(); x++)
+            for (int x = 0; x < getWidth(); ++x)
             {
-                getPixel(x, y, rgb);
-                Color.RGBtoHSB(rgb[0], rgb[1], rgb[2], hsb);
-
-                hsb[2] += brightness;
-
-                Color c = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
-                rgb[0] = c.getRed();
-                rgb[1] = c.getGreen();
-                rgb[2] = c.getBlue();
-                setPixel(x, y, rgb);
+                float[] hsb = getPixelHSB(x, y);
+                hsb[HSB_SATURATION] += brightness;
+                setPixelHSB(x, y, hsb);
             }
         }
         this.notifyObservers();
+    }
+
+    private float[] getPixelHSB(int x, int y)
+    {
+        int[] rgb = new int[3];
+        float[] hsb = new float[3];
+        getPixel(x, y, rgb);
+        Color.RGBtoHSB(rgb[RGB_RED], rgb[RGB_GREEN], rgb[RGB_BLUE], hsb);
+        return hsb;
+    }
+
+    private void setPixelHSB(int x, int y, float[] hsb)
+    {
+        int[] rgb = new int[3];
+        Color c = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
+        rgb[0] = c.getRed();
+        rgb[1] = c.getGreen();
+        rgb[2] = c.getBlue();
+        setPixel(x, y, rgb);
     }
 
     @Override
@@ -106,15 +158,23 @@ public class DrawingImage extends CS355Image
 
     private ImageKernel getSurroundingPixels(int x, int y)
     {
-        int[] m00 = getUpperLeft(x, y);
-        int[] m01 = getUpper(x, y);
-        int[] m02 = getUpperRight(x, y);
-        int[] m10 = getLeft(x, y);
+//        if (x == 0)
+//            x = 1;
+//        else if (x == getWidth() - 1)
+//            x = getWidth() - 2;
+//        if (y == 0)
+//            y = 1;
+//        else if (y == getHeight() - 1)
+//            y = getHeight() - 2;
+        int[] m00 = getTrueUpperLeft(x, y);
+        int[] m01 = getTrueUpper(x, y);
+        int[] m02 = getTrueUpperRight(x, y);
+        int[] m10 = getTrueLeft(x, y);
         int[] m11 = getCenter(x, y);
-        int[] m12 = getRight(x, y);
-        int[] m20 = getBottomLeft(x, y);
-        int[] m21 = getBottom(x, y);
-        int[] m22 = getBottomRight(x, y);
+        int[] m12 = getTrueRight(x, y);
+        int[] m20 = getTrueBottomLeft(x, y);
+        int[] m21 = getTrueBottom(x, y);
+        int[] m22 = getTrueBottomRight(x, y);
         return new ImageKernel(m00, m01, m02, m10, m11, m12, m20, m21, m22);
     }
 
@@ -133,8 +193,7 @@ public class DrawingImage extends CS355Image
         if (isYAtTopEdge(y))
         {
             return getCenter(x, y);
-        }
-        else
+        } else
         {
             return getTrueUpper(x, y);
         }
@@ -152,19 +211,16 @@ public class DrawingImage extends CS355Image
             if (isYAtTopEdge(y))
             {
                 return getCenter(x, y);
-            }
-            else
+            } else
             {
                 return getTrueUpper(x, y);
             }
-        }
-        else
+        } else
         {
             if (isYAtTopEdge(y))
             {
                 return getTrueRight(x, y);
-            }
-            else
+            } else
             {
                 return getTrueUpperRight(x, y);
             }
@@ -181,8 +237,7 @@ public class DrawingImage extends CS355Image
         if (isXAtRightEdge(x))
         {
             return getCenter(x, y);
-        }
-        else
+        } else
         {
             return getTrueRight(x, y);
         }
@@ -200,19 +255,16 @@ public class DrawingImage extends CS355Image
             if (isYAtBottomEdge(y))
             {
                 return getCenter(x, y);
-            }
-            else
+            } else
             {
                 return getTrueBottom(x, y);
             }
-        }
-        else
+        } else
         {
             if (isYAtBottomEdge(y))
             {
                 return getTrueRight(x, y);
-            }
-            else
+            } else
             {
                 return getTrueBottomRight(x, y);
             }
@@ -229,8 +281,7 @@ public class DrawingImage extends CS355Image
         if (isYAtBottomEdge(y))
         {
             return getCenter(x, y);
-        }
-        else
+        } else
         {
             return getTrueBottom(x, y);
         }
@@ -248,19 +299,16 @@ public class DrawingImage extends CS355Image
             if (isYAtBottomEdge(y))
             {
                 return getCenter(x, y);
-            }
-            else
+            } else
             {
                 return getTrueBottom(x, y);
             }
-        }
-        else
+        } else
         {
             if (isYAtBottomEdge(y))
             {
                 return getTrueLeft(x, y);
-            }
-            else
+            } else
             {
                 return getTrueBottomLeft(x, y);
             }
@@ -277,8 +325,7 @@ public class DrawingImage extends CS355Image
         if (isXAtLeftEdge(x))
         {
             return getCenter(x, y);
-        }
-        else
+        } else
         {
             return getTrueLeft(x, y);
         }
@@ -303,15 +350,13 @@ public class DrawingImage extends CS355Image
             {
                 return getTrueUpper(x, y);
             }
-        }
-        else
+        } else
         {
             //top edge, return left
             if (isYAtTopEdge(y))
             {
                 return getTrueLeft(x, y);
-            }
-            else
+            } else
             {
                 return getTrueUpperLeft(x, y);
             }
@@ -320,22 +365,35 @@ public class DrawingImage extends CS355Image
 
     private boolean isXAtLeftEdge(int x)
     {
-        return x - 1 < 0;
+        return x - 1 <= 0;
     }
 
     private boolean isXAtRightEdge(int x)
     {
-        return x + 1 > getWidth();
+        return x + 1 >= getWidth();
     }
 
     private boolean isYAtTopEdge(int y)
     {
-        return y - 1 < 0;
+        return y - 1 <= 0;
     }
 
     private boolean isYAtBottomEdge(int y)
     {
-        return y + 1 > getHeight();
+        return y + 1 >= getHeight();
     }
 
+    public void toggleBackgroundDisplay()
+    {
+        drawImage = !drawImage;
+        this.notifyObservers();
+    }
+
+    @Override
+    public synchronized void addObserver(Observer o)
+    {
+        super.addObserver(o);
+        if (o instanceof DrawingViewer)
+            ((DrawingViewer) o).setImage(this);
+    }
 }

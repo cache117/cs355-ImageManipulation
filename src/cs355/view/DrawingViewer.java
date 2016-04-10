@@ -5,6 +5,7 @@ import cs355.controller.DrawingController;
 import cs355.model.drawing.*;
 import cs355.model.drawing.Shape;
 import cs355.model.image.CS355Image;
+import cs355.model.image.DrawingImage;
 import cs355.model.scene.*;
 import cs355.view.drawing.Drawable3DLine;
 import cs355.view.drawing.DrawableNullShape;
@@ -14,6 +15,7 @@ import cs355.view.drawing.util.Matrix;
 import cs355.view.drawing.util.Transform;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.List;
@@ -32,7 +34,7 @@ public class DrawingViewer implements ViewRefresher
     private static final Logger LOGGER = Logger.getLogger(DrawingViewer.class.getName());
 
     //Models
-    private DrawingModel model;
+    private CS355Drawing model;
     private CS355Scene scene;
     private CS355Image image;
 
@@ -53,17 +55,32 @@ public class DrawingViewer implements ViewRefresher
         viewportUpperLeft = new Point2D.Double(HALF_WORLD_SIZE, HALF_WORLD_SIZE);
         this.scene = scene;
         camera = new VirtualCamera();
+        this.image = new DrawingImage();
     }
 
     /* begin ViewRefresher methods */
     @Override
     public void refreshView(Graphics2D graphics2D)
     {
+        this.drawImage(graphics2D);
+        this.drawShapes(graphics2D);
+        this.drawScene(graphics2D);
+    }
+
+    private void drawImage(Graphics2D graphics)
+    {
+        AffineTransform affineTransform = Transform.buildWorldToViewTransformation(new ViewportParameters(getViewportUpperLeft(), getScalingFactor()));
+        affineTransform.concatenate(AffineTransform.getTranslateInstance(512, 512));
+        graphics.drawImage(image.getImage(), affineTransform, null);
+    }
+
+    private void drawShapes(Graphics2D graphics)
+    {
         //Draw selection handles last
         List<Shape> shapes = model.getShapesReversed();
 
         DrawableShape selectedShape = new DrawableNullShape(Color.WHITE);
-        DrawingParameters drawingParameters = new DrawingParameters(graphics2D, new ViewportParameters(viewportUpperLeft, scalingFactor));
+        DrawingParameters drawingParameters = new DrawingParameters(graphics, new ViewportParameters(viewportUpperLeft, scalingFactor));
         for (Shape shape : shapes)
         {
             DrawableShape drawableShape = DrawableShapeFactory.createDrawableShape(shape);
@@ -74,9 +91,16 @@ public class DrawingViewer implements ViewRefresher
             drawableShape.draw(drawingParameters);
         }
         selectedShape.drawOutline(drawingParameters);
+    }
+
+
+    private void drawScene(Graphics2D graphics)
+    {
+        AffineTransform affineTransform = Transform.buildWorldToViewTransformation(new ViewportParameters(getViewportUpperLeft(), getScalingFactor()));
+        graphics.setTransform(affineTransform);
         if (camera.is3DEnabled())
         {
-            SceneParser sceneParser = new SceneParser(scene, graphics2D);
+            SceneParser sceneParser = new SceneParser(scene, graphics);
             sceneParser.renderScene();
         }
     }
@@ -89,10 +113,10 @@ public class DrawingViewer implements ViewRefresher
     {
         if (o instanceof DrawingModel)
             model = (DrawingModel) o;
-        else if (o instanceof CS355Image)
-            image = (CS355Image) o;
         else if (o instanceof CS355Scene)
             scene = (CS355Scene) o;
+        else if (o instanceof DrawingImage)
+            image = (CS355Image) o;
         GUIFunctions.refresh();
     }
     /* end Observer methods */
@@ -175,6 +199,16 @@ public class DrawingViewer implements ViewRefresher
     public void toggle3DModelDisplay()
     {
         camera.toggleCameraMovementEnabled();
+    }
+
+    public void setImage(DrawingImage image)
+    {
+        this.image = image;
+    }
+
+    public void setDrawing(DrawingModel drawing)
+    {
+        this.model = drawing;
     }
 
     private class SceneParser
