@@ -19,13 +19,13 @@ public class DrawingImage extends CS355Image
     public DrawingImage()
     {
         super();
-        this.drawImage = false;
+        this.drawImage = true;
     }
 
     @Override
     public BufferedImage getImage()
     {
-        if (drawImage)
+        if (isImageDrawable())
         {
             BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
             WritableRaster raster = image.getRaster();
@@ -43,20 +43,28 @@ public class DrawingImage extends CS355Image
             return null;
     }
 
+    private boolean isImageDrawable()
+    {
+        return drawImage && getWidth() > 0 && getHeight() > 0;
+    }
+
     @Override
     public void edgeDetection()
     {
-        for (int y = 0; y < getHeight(); ++y)
+        if (isImageDrawable())
         {
-            for (int x = 0; x < getWidth(); ++x)
+            for (int y = 0; y < getHeight(); ++y)
             {
-                if (isPixelOnEdge(x, y))
-                    setPixel(x, y, new int[]{0, 0, 0});
-                else
+                for (int x = 0; x < getWidth(); ++x)
                 {
-                    ImageKernel imageKernel = getSurroundingPixels(x, y);
-                    int[] newPixels = imageKernel.edgeDetection();
-                    setPixel(x, y, newPixels);
+                    if (isPixelOnEdge(x, y))
+                        setPixel(x, y, new int[]{0, 0, 0});
+                    else
+                    {
+                        ImageKernel imageKernel = getSurroundingPixels(x, y);
+                        int[] newPixels = imageKernel.edgeDetection();
+                        setPixel(x, y, newPixels);
+                    }
                 }
             }
         }
@@ -65,102 +73,120 @@ public class DrawingImage extends CS355Image
     @Override
     public void sharpen()
     {
-        this.notifyObservers();
+        if (isImageDrawable())
+        {
+            this.notifyObservers();
+        }
     }
 
     @Override
     public void medianBlur()
     {
-        for (int y = 0; y < getHeight() - 1; ++y)
+        if (isImageDrawable())
         {
-            for (int x = 0; x < getWidth() - 1; ++x)
+            for (int y = 0; y < getHeight() - 1; ++y)
             {
-                if (isPixelOnEdge(x, y))
-                    setPixel(x, y, new int[]{0, 0, 0});
-                else
+                for (int x = 0; x < getWidth() - 1; ++x)
                 {
-                    ImageKernel imageKernel = getSurroundingPixels(x, y);
-                    int[] newPixels = imageKernel.medianBlur();
-                    setPixel(x, y, newPixels);
+                    if (isPixelOnEdge(x, y))
+                        setPixel(x, y, new int[]{0, 0, 0});
+                    else
+                    {
+                        ImageKernel imageKernel = getSurroundingPixels(x, y);
+                        int[] newPixels = imageKernel.medianBlur();
+                        setPixel(x, y, newPixels);
+                    }
                 }
             }
+            this.notifyObservers();
         }
-        this.notifyObservers();
     }
 
     @Override
     public void uniformBlur()
     {
-        for (int y = 0; y < getHeight(); ++y)
+        if (isImageDrawable())
         {
-            for (int x = 0; x < getWidth() - 1; ++x)
+            for (int y = 0; y < getHeight(); ++y)
             {
-                if (isPixelOnEdge(x, y))
-                    setPixel(x, y, new int[]{0, 0, 0});
-                else
+                for (int x = 0; x < getWidth() - 1; ++x)
                 {
-                    ImageKernel imageKernel = getSurroundingPixels(x, y);
-                    int[] newPixels = imageKernel.uniformBlur();
-                    setPixel(x, y, newPixels);
+                    if (isPixelOnEdge(x, y))
+                        setPixel(x, y, new int[]{0, 0, 0});
+                    else
+                    {
+                        ImageKernel imageKernel = getSurroundingPixels(x, y);
+                        int[] newPixels = imageKernel.uniformBlur();
+                        setPixel(x, y, newPixels);
+                    }
                 }
             }
+            this.notifyObservers();
         }
-        this.notifyObservers();
     }
 
     @Override
     public void grayscale()
     {
-        for (int y = 0; y < getHeight(); ++y)
+        if (isImageDrawable())
         {
-            for (int x = 0; x < getWidth(); ++x)
+            for (int y = 0; y < getHeight(); ++y)
             {
-                float[] hsb = getPixelHSB(x, y);
-                hsb[HSB_SATURATION] = 0;
-                setPixelHSB(x, y, hsb);
+                for (int x = 0; x < getWidth(); ++x)
+                {
+                    float[] hsb = getPixelHSB(x, y);
+                    hsb[HSB_SATURATION] = 0;
+                    setPixelHSB(x, y, hsb);
+                }
             }
+            this.notifyObservers();
         }
-        this.notifyObservers();
     }
 
     @Override
     public void contrast(int amount)
     {
-        for (int y = 0; y < getHeight(); ++y)
+        if (isImageDrawable())
         {
-            for (int x = 0; x < getWidth(); ++x)
+            for (int y = 0; y < getHeight(); ++y)
             {
-                float[] hsb = getPixelHSB(x, y);
-                float newBrightness = (float) ((Math.pow((double) ((amount + 100f) / 100f), 4) * (hsb[HSB_BRIGHTNESS] - 128f)) + 128f);
-                hsb[HSB_BRIGHTNESS] = newBrightness;
-                if (hsb[HSB_BRIGHTNESS] > 1.0)
-                    hsb[HSB_BRIGHTNESS] = 1.0f;
-                else if (hsb[HSB_BRIGHTNESS] < 0.0)
-                    hsb[HSB_BRIGHTNESS] = 0.0f;
-                setPixelHSB(x, y, hsb);
+                for (int x = 0; x < getWidth(); ++x)
+                {
+                    float[] hsb = getPixelHSB(x, y);
+                    float newBrightness = (float) ((Math.pow((double) ((amount + 100f) / 100f), 4) * (hsb[HSB_BRIGHTNESS] - 128f)) + 128f);
+                    hsb[HSB_BRIGHTNESS] = newBrightness;
+                    if (hsb[HSB_BRIGHTNESS] > 1.0)
+                        hsb[HSB_BRIGHTNESS] = 1.0f;
+                    else if (hsb[HSB_BRIGHTNESS] < 0.0)
+                        hsb[HSB_BRIGHTNESS] = 0.0f;
+                    setPixelHSB(x, y, hsb);
+                }
             }
+            this.notifyObservers();
         }
-        this.notifyObservers();
     }
 
     @Override
     public void brightness(int amount)
     {
-        float brightness = amount / 100f;
-        for (int y = 0; y < getHeight(); ++y)
+        if (isImageDrawable())
         {
-            for (int x = 0; x < getWidth(); ++x)
+            float brightness = amount / 100f;
+            for (int y = 0; y < getHeight(); ++y)
             {
-                float[] hsb = getPixelHSB(x, y);
-                hsb[HSB_BRIGHTNESS] += brightness;
-                if (hsb[HSB_BRIGHTNESS] > 1.0)
-                    hsb[HSB_BRIGHTNESS] = 1.0f;
-                else if (hsb[HSB_BRIGHTNESS] < 0.0)
-                    hsb[HSB_BRIGHTNESS] = 0.0f;
-                setPixelHSB(x, y, hsb);
+                for (int x = 0; x < getWidth(); ++x)
+                {
+                    float[] hsb = getPixelHSB(x, y);
+                    hsb[HSB_BRIGHTNESS] += brightness;
+                    if (hsb[HSB_BRIGHTNESS] > 1.0)
+                        hsb[HSB_BRIGHTNESS] = 1.0f;
+                    else if (hsb[HSB_BRIGHTNESS] < 0.0)
+                        hsb[HSB_BRIGHTNESS] = 0.0f;
+                    setPixelHSB(x, y, hsb);
+                }
             }
+            this.notifyObservers();
         }
-        this.notifyObservers();
     }
 
     private float[] getPixelHSB(int x, int y)
