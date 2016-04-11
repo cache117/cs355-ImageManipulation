@@ -67,6 +67,7 @@ public class DrawingImage extends CS355Image
                     }
                 }
             }
+            this.notifyObservers();
         }
     }
 
@@ -450,7 +451,8 @@ public class DrawingImage extends CS355Image
     public void toggleBackgroundDisplay()
     {
         drawImage = !drawImage;
-        this.notifyObservers();
+        if (isImageDrawable())
+            this.notifyObservers();
     }
 
     @Override
