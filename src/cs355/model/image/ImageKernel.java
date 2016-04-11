@@ -60,6 +60,7 @@ public class ImageKernel
         int redMedian = getMedianValue(getColorChannel(RED));
         int greenMedian = getMedianValue(getColorChannel(GREEN));
         int blueMedian = getMedianValue(getColorChannel(BLUE));
+        //get closest actual pixel (least square distance (sum of square distances of each color. Like an xyz)
         return new int[] { redMedian, greenMedian, blueMedian };
     }
 

@@ -8,7 +8,7 @@ import java.awt.image.WritableRaster;
 import java.util.Observer;
 
 /**
- * Created by cstaheli on 3/30/2016.
+ * A DrawingImage that handles all of the basic operations that can take place on an image.
  */
 public class DrawingImage extends CS355Image
 {
@@ -46,13 +46,18 @@ public class DrawingImage extends CS355Image
     @Override
     public void edgeDetection()
     {
-        for (int y = 1; y < getHeight() - 1; ++y)
+        for (int y = 0; y < getHeight(); ++y)
         {
-            for (int x = 1; x < getWidth() - 1; ++x)
+            for (int x = 0; x < getWidth(); ++x)
             {
-                ImageKernel imageKernel = getSurroundingPixels(x, y);
-                int[] newPixels = imageKernel.edgeDetection();
-                setPixel(x, y, newPixels);
+                if (isPixelOnEdge(x, y))
+                    setPixel(x, y, new int[]{0, 0, 0});
+                else
+                {
+                    ImageKernel imageKernel = getSurroundingPixels(x, y);
+                    int[] newPixels = imageKernel.edgeDetection();
+                    setPixel(x, y, newPixels);
+                }
             }
         }
     }
@@ -66,13 +71,18 @@ public class DrawingImage extends CS355Image
     @Override
     public void medianBlur()
     {
-        for (int y = 1; y < getHeight() - 1; ++y)
+        for (int y = 0; y < getHeight() - 1; ++y)
         {
-            for (int x = 1; x < getWidth() - 1; ++x)
+            for (int x = 0; x < getWidth() - 1; ++x)
             {
-                ImageKernel imageKernel = getSurroundingPixels(x, y);
-                int[] newPixels = imageKernel.medianBlur();
-                setPixel(x, y, newPixels);
+                if (isPixelOnEdge(x, y))
+                    setPixel(x, y, new int[]{0, 0, 0});
+                else
+                {
+                    ImageKernel imageKernel = getSurroundingPixels(x, y);
+                    int[] newPixels = imageKernel.medianBlur();
+                    setPixel(x, y, newPixels);
+                }
             }
         }
         this.notifyObservers();
@@ -81,13 +91,18 @@ public class DrawingImage extends CS355Image
     @Override
     public void uniformBlur()
     {
-        for (int y = 1; y < getHeight() - 1; ++y)
+        for (int y = 0; y < getHeight(); ++y)
         {
-            for (int x = 1; x < getWidth() - 1; ++x)
+            for (int x = 0; x < getWidth() - 1; ++x)
             {
-                ImageKernel imageKernel = getSurroundingPixels(x, y);
-                int[] newPixels = imageKernel.uniformBlur();
-                setPixel(x, y, newPixels);
+                if (isPixelOnEdge(x, y))
+                    setPixel(x, y, new int[]{0, 0, 0});
+                else
+                {
+                    ImageKernel imageKernel = getSurroundingPixels(x, y);
+                    int[] newPixels = imageKernel.uniformBlur();
+                    setPixel(x, y, newPixels);
+                }
             }
         }
         this.notifyObservers();
@@ -111,6 +126,20 @@ public class DrawingImage extends CS355Image
     @Override
     public void contrast(int amount)
     {
+        for (int y = 0; y < getHeight(); ++y)
+        {
+            for (int x = 0; x < getWidth(); ++x)
+            {
+                float[] hsb = getPixelHSB(x, y);
+                float newBrightness = (float) ((Math.pow((double) ((amount + 100f) / 100f), 4) * (hsb[HSB_BRIGHTNESS] - 128f)) + 128f);
+                hsb[HSB_BRIGHTNESS] = newBrightness;
+                if (hsb[HSB_BRIGHTNESS] > 1.0)
+                    hsb[HSB_BRIGHTNESS] = 1.0f;
+                else if (hsb[HSB_BRIGHTNESS] < 0.0)
+                    hsb[HSB_BRIGHTNESS] = 0.0f;
+                setPixelHSB(x, y, hsb);
+            }
+        }
         this.notifyObservers();
     }
 
@@ -123,7 +152,11 @@ public class DrawingImage extends CS355Image
             for (int x = 0; x < getWidth(); ++x)
             {
                 float[] hsb = getPixelHSB(x, y);
-                hsb[HSB_SATURATION] += brightness;
+                hsb[HSB_BRIGHTNESS] += brightness;
+                if (hsb[HSB_BRIGHTNESS] > 1.0)
+                    hsb[HSB_BRIGHTNESS] = 1.0f;
+                else if (hsb[HSB_BRIGHTNESS] < 0.0)
+                    hsb[HSB_BRIGHTNESS] = 0.0f;
                 setPixelHSB(x, y, hsb);
             }
         }
@@ -158,14 +191,14 @@ public class DrawingImage extends CS355Image
 
     private ImageKernel getSurroundingPixels(int x, int y)
     {
-//        if (x == 0)
-//            x = 1;
-//        else if (x == getWidth() - 1)
-//            x = getWidth() - 2;
-//        if (y == 0)
-//            y = 1;
-//        else if (y == getHeight() - 1)
-//            y = getHeight() - 2;
+        //        if (x == 0)
+        //            x = 1;
+        //        else if (x == getWidth() - 1)
+        //            x = getWidth() - 2;
+        //        if (y == 0)
+        //            y = 1;
+        //        else if (y == getHeight() - 1)
+        //            y = getHeight() - 2;
         int[] m00 = getTrueUpperLeft(x, y);
         int[] m01 = getTrueUpper(x, y);
         int[] m02 = getTrueUpperRight(x, y);
@@ -381,6 +414,11 @@ public class DrawingImage extends CS355Image
     private boolean isYAtBottomEdge(int y)
     {
         return y + 1 >= getHeight();
+    }
+
+    private boolean isPixelOnEdge(int x, int y)
+    {
+        return isXAtLeftEdge(x) || isXAtRightEdge(x) || isYAtTopEdge(y) || isYAtBottomEdge(y);
     }
 
     public void toggleBackgroundDisplay()
