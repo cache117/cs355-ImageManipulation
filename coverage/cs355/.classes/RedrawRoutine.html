@@ -1,0 +1,247 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RedrawRoutine</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RedrawRoutine (cs355)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RedrawRoutine</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    51.2%
+  </span>
+  <span class="absValue">
+    (22/ 43)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cs355.view.ViewRefresher;
+<i>4</i>&nbsp;import java.awt.Canvas;
+<i>5</i>&nbsp;import java.awt.Graphics;
+<i>6</i>&nbsp;import java.awt.Graphics2D;
+<i>7</i>&nbsp;import java.awt.GraphicsConfiguration;
+<i>8</i>&nbsp;import java.awt.GraphicsDevice;
+<i>9</i>&nbsp;import java.awt.GraphicsEnvironment;
+<i>10</i>&nbsp;import java.awt.image.BufferStrategy;
+<i>11</i>&nbsp;import java.awt.image.BufferedImage;
+<i>12</i>&nbsp;import java.util.concurrent.Semaphore;
+<i>13</i>&nbsp;import java.util.logging.Level;
+<i>14</i>&nbsp;import java.util.logging.Logger;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;/**
+<i>17</i>&nbsp; * A set of logic for redrawing the screen. Underneath the hood, this is
+<i>18</i>&nbsp; * using double buffering and timing to draw as predictably as possible.
+<i>19</i>&nbsp; * @author Talonos
+<i>20</i>&nbsp; */
+<i>21</i>&nbsp;class RedrawRoutine implements Runnable {
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;	// Things used to draw.
+<i>24</i>&nbsp;	private Canvas screenCanvas;
+<i>25</i>&nbsp;	private BufferStrategy buffer;
+<i>26</i>&nbsp;	private Graphics2D g2d;
+<i>27</i>&nbsp;	private Graphics graphics;
+<i>28</i>&nbsp;	private BufferedImage bufImage;
+<i>29</i>&nbsp;	private GraphicsConfiguration gc;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;	// The student&#39;s ViewRefresher.
+<i>32</i>&nbsp;	ViewRefresher viewRefresher;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    // If you ever need to make sure the view is not being redrawn
+<i>35</i>&nbsp;	// while you do work under the hood, you can use this semaphore.
+<b class="fc"><i>36</i>&nbsp;	public Semaphore isDrawing = new Semaphore(1);</b>
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;	// Private constants.
+<i>39</i>&nbsp;	private static final double FRAME_TIME = 200;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;	// We don&#39;t want the user to have direct access to this class.
+<i>42</i>&nbsp;	private static RedrawRoutine instance;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;	/**
+<i>45</i>&nbsp;	 * Grab the instance. Creates one if it doesn&#39;t exist.
+<i>46</i>&nbsp;	 * @return the current instance of this class.
+<i>47</i>&nbsp;	 */
+<i>48</i>&nbsp;	public static RedrawRoutine inst() {
+<b class="fc"><i>49</i>&nbsp;		if (instance == null) {</b>
+<b class="fc"><i>50</i>&nbsp;			instance = new RedrawRoutine();</b>
+<i>51</i>&nbsp;		}
+<b class="fc"><i>52</i>&nbsp;		return instance;</b>
+<i>53</i>&nbsp;	}
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;	/**
+<i>56</i>&nbsp;	 * Apparently, we don&#39;t need to do anything here.
+<i>57</i>&nbsp;	 */
+<b class="fc"><i>58</i>&nbsp;	private RedrawRoutine() {</b>
+<i>59</i>&nbsp;        // Set up the drawing area.
+<i>60</i>&nbsp;		// screenCanvas.setIgnoreRepaint(true);
+<b class="fc"><i>61</i>&nbsp;	}</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;	/**
+<i>64</i>&nbsp;	 * Initialize with a Canvas and ViewRefresher.
+<i>65</i>&nbsp;	 * @param s = the canvas to draw to.
+<i>66</i>&nbsp;	 * @param v = the student&#39;s ViewRefresher
+<i>67</i>&nbsp;	 *			  that will control drawing.
+<i>68</i>&nbsp;	 */
+<i>69</i>&nbsp;	public void initialize(Canvas s, ViewRefresher v) {
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;		// Initialize fields.
+<b class="fc"><i>72</i>&nbsp;		viewRefresher = v;</b>
+<b class="fc"><i>73</i>&nbsp;		screenCanvas = s;</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;		// Set double buffering and grab the resulting buffer.
+<b class="fc"><i>76</i>&nbsp;		screenCanvas.createBufferStrategy(2);</b>
+<b class="fc"><i>77</i>&nbsp;		buffer = screenCanvas.getBufferStrategy();</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;		// Make sure we set the correct GraphicsConfiguration.
+<b class="fc"><i>80</i>&nbsp;		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();</b>
+<b class="fc"><i>81</i>&nbsp;		GraphicsDevice gd = ge.getDefaultScreenDevice();</b>
+<b class="fc"><i>82</i>&nbsp;		gc = gd.getDefaultConfiguration();</b>
+<b class="fc"><i>83</i>&nbsp;	}</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;	/**
+<i>86</i>&nbsp;	 * This is the drawing loop.
+<i>87</i>&nbsp;	 */
+<i>88</i>&nbsp;	@Override
+<i>89</i>&nbsp;	public void run() {
+<b class="nc"><i>90</i>&nbsp;		double time = System.currentTimeMillis();</b>
+<i>91</i>&nbsp;		try {
+<b class="nc"><i>92</i>&nbsp;			isDrawing.acquire();</b>
+<i>93</i>&nbsp;		}
+<b class="nc"><i>94</i>&nbsp;		catch (InterruptedException ex) {</b>
+<b class="nc"><i>95</i>&nbsp;			Logger.getLogger(RedrawRoutine.class.getName()).log(Level.SEVERE, null, ex);</b>
+<b class="nc"><i>96</i>&nbsp;			System.exit(-1);</b>
+<b class="nc"><i>97</i>&nbsp;		}</b>
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;		// Actual drawing loop.
+<i>100</i>&nbsp;		while (true) {
+<i>101</i>&nbsp;			try {
+<i>102</i>&nbsp;                // Make sure that if all else fails, you sleep for at least a millisecond
+<i>103</i>&nbsp;				// to let the other logic run.
+<b class="nc"><i>104</i>&nbsp;				isDrawing.release();</b>
+<b class="nc"><i>105</i>&nbsp;				Thread.sleep(1l);</b>
+<b class="nc"><i>106</i>&nbsp;				if (time &lt; FRAME_TIME) {</b>
+<b class="nc"><i>107</i>&nbsp;					Thread.sleep((long) (FRAME_TIME - time));</b>
+<i>108</i>&nbsp;				}
+<i>109</i>&nbsp;				// When game logic relenquishes control, move forward.
+<b class="nc"><i>110</i>&nbsp;				isDrawing.acquire();</b>
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;				// Refresh the page, making sure to count how long it takes.
+<b class="nc"><i>113</i>&nbsp;				time = System.currentTimeMillis();</b>
+<b class="nc"><i>114</i>&nbsp;				refreshView();</b>
+<b class="nc"><i>115</i>&nbsp;				time = System.currentTimeMillis() - time;</b>
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;                // Display the time. Commented out, but you can see how long it
+<i>118</i>&nbsp;				// takes to render a frame by uncommenting the following line:
+<i>119</i>&nbsp;                // g2d.drawString(&quot;&quot;+time, 10, 10);
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;				// Draw the image to the buffer.
+<b class="nc"><i>122</i>&nbsp;				graphics = buffer.getDrawGraphics();</b>
+<b class="nc"><i>123</i>&nbsp;				graphics.drawImage(bufImage, 0, 0, null);</b>
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;                // I don&#39;t know what this is for, but it&#39;s important.
+<i>126</i>&nbsp;				// I got it from sample code online, and still need
+<i>127</i>&nbsp;				// to figure out what this code&#39;s purpose is.
+<b class="nc"><i>128</i>&nbsp;				if (!buffer.contentsLost()) {</b>
+<b class="nc"><i>129</i>&nbsp;					buffer.show();</b>
+<i>130</i>&nbsp;				}
+<i>131</i>&nbsp;			}
+<b class="nc"><i>132</i>&nbsp;			catch (InterruptedException ex) {</b>
+<b class="nc"><i>133</i>&nbsp;				Logger.getLogger(RedrawRoutine.class.getName()).log(Level.SEVERE, null, ex);</b>
+<b class="nc"><i>134</i>&nbsp;			}</b>
+<i>135</i>&nbsp;		}
+<i>136</i>&nbsp;	}
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;	/**
+<i>139</i>&nbsp;	 * Refreshes the view. It does this by calling the
+<i>140</i>&nbsp;	 * refresh method on the provided ViewRefresher.
+<i>141</i>&nbsp;	 * @return the BufferedImage that the Graphics2d drew on.
+<i>142</i>&nbsp;	 *		   Used for the &quot;Save Picture&quot; option.
+<i>143</i>&nbsp;	 */
+<i>144</i>&nbsp;	public BufferedImage refreshView() {
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;		// Get an image, and the graphics of that image.
+<b class="fc"><i>147</i>&nbsp;		bufImage = gc.createCompatibleImage(screenCanvas.getWidth(), screenCanvas.getHeight());</b>
+<b class="fc"><i>148</i>&nbsp;		g2d = bufImage.createGraphics();</b>
+<b class="fc"><i>149</i>&nbsp;		viewRefresher.refreshView(g2d);</b>
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;		// Draw the image to the buffer.
+<b class="fc"><i>152</i>&nbsp;		graphics = buffer.getDrawGraphics();</b>
+<b class="fc"><i>153</i>&nbsp;		graphics.drawImage(bufImage, 0, 0, null);</b>
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;        // I don&#39;t know what this is for, but it&#39;s important. I
+<i>156</i>&nbsp;		// got it from sample code online, and still need to figure out
+<i>157</i>&nbsp;		// what this code&#39;s purpose is.
+<b class="fc"><i>158</i>&nbsp;		if (!buffer.contentsLost()) {</b>
+<b class="fc"><i>159</i>&nbsp;			buffer.show();</b>
+<i>160</i>&nbsp;		}
+<i>161</i>&nbsp;
+<b class="fc"><i>162</i>&nbsp;		return bufImage;</b>
+<i>163</i>&nbsp;	}
+<i>164</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

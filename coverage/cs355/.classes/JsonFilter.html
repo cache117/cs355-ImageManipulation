@@ -1,0 +1,125 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: JsonFilter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355</a> ]
+</div>
+
+<h1>Coverage Summary for Class: JsonFilter (cs355)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JsonFilter</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.io.File;
+<i>4</i>&nbsp;import javax.swing.filechooser.FileFilter;
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;/**
+<i>7</i>&nbsp; * A FileFilter for .json files.
+<i>8</i>&nbsp; * @author gavin
+<i>9</i>&nbsp; */
+<b class="fc"><i>10</i>&nbsp;public class JsonFilter extends FileFilter {</b>
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;	// The description of the file that this filter accepts.
+<i>13</i>&nbsp;	private static final String DESC = &quot;JSON Files (*.json)&quot;;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;	/**
+<i>16</i>&nbsp;	 * Decides whether to accept a file or not.
+<i>17</i>&nbsp;	 * @param file = the file to accept or reject.
+<i>18</i>&nbsp;	 * @return true on acceptance, false otherwise.
+<i>19</i>&nbsp;	 */
+<i>20</i>&nbsp;	@Override
+<i>21</i>&nbsp;	public boolean accept(File file) {
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;		// Make sure to include directories.
+<b class="fc"><i>24</i>&nbsp;		if (file.isDirectory()) {</b>
+<b class="fc"><i>25</i>&nbsp;			return true;</b>
+<i>26</i>&nbsp;		}
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;		// Test for the .json extension.
+<b class="fc"><i>29</i>&nbsp;		return FileUtils.getExtension(file).equals(FileUtils.json);</b>
+<i>30</i>&nbsp;	}
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;	/**
+<i>33</i>&nbsp;	 * Returns a string description of the
+<i>34</i>&nbsp;	 * file type accept by this filter.
+<i>35</i>&nbsp;	 * @return the file type description.
+<i>36</i>&nbsp;	 */
+<i>37</i>&nbsp;	@Override
+<i>38</i>&nbsp;	public String getDescription() {
+<b class="fc"><i>39</i>&nbsp;		return DESC;</b>
+<i>40</i>&nbsp;	}
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

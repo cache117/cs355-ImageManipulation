@@ -1,0 +1,89 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: State</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.view.drawing.state</a> ]
+</div>
+
+<h1>Coverage Summary for Class: State (cs355.view.drawing.state)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">State</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.view.drawing.state;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cs355.controller.DrawingController;
+<i>4</i>&nbsp;import cs355.model.drawing.CS355Drawing;
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;/**
+<i>7</i>&nbsp; * State interface.
+<i>8</i>&nbsp; */
+<i>9</i>&nbsp;public interface State
+<i>10</i>&nbsp;{
+<i>11</i>&nbsp;    /**
+<i>12</i>&nbsp;     * @param model
+<i>13</i>&nbsp;     */
+<i>14</i>&nbsp;    void stateChanged(CS355Drawing model);
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;    /**
+<i>17</i>&nbsp;     * @param controller
+<i>18</i>&nbsp;     */
+<i>19</i>&nbsp;    void lineButtonHit(DrawingController controller);
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    void squareButtonHit(DrawingController controller);
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    void rectangleButtonHit(DrawingController controller);
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    void circleButtonHit(DrawingController controller);
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    void ellipseButtonHit(DrawingController controller);
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    void triangleButtonHit(DrawingController controller);
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    void selectButtonHit(DrawingController controller);
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    void deleteShape(CS355Drawing model);
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    void moveShapeForward(CS355Drawing model);
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    void moveShapeBackward(CS355Drawing model);
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    void moveShapeToFront(CS355Drawing model);
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    void moveShapeToBack(CS355Drawing model);
+<i>42</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

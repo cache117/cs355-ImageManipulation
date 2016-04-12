@@ -1,0 +1,419 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CS355Image</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.model.image</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CS355Image (cs355.model.image)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CS355Image</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    52.9%
+  </span>
+  <span class="absValue">
+    (9/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    65.8%
+  </span>
+  <span class="absValue">
+    (48/ 73)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.model.image;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.awt.image.BufferedImage;
+<i>4</i>&nbsp;import java.awt.image.WritableRaster;
+<i>5</i>&nbsp;import java.io.File;
+<i>6</i>&nbsp;import java.io.IOException;
+<i>7</i>&nbsp;import java.util.Observable;
+<i>8</i>&nbsp;import java.util.logging.Level;
+<i>9</i>&nbsp;import java.util.logging.Logger;
+<i>10</i>&nbsp;import javax.imageio.ImageWriter;
+<i>11</i>&nbsp;import javax.imageio.stream.ImageOutputStream;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;public abstract class CS355Image extends Observable {
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;	// The pixel data.
+<i>16</i>&nbsp;	private Channel[] pixels;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;	// Obvious.
+<i>19</i>&nbsp;	private int width;
+<i>20</i>&nbsp;	private int height;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;	/**
+<i>23</i>&nbsp;	 * A constructor that initialized a blank image.
+<i>24</i>&nbsp;	 */
+<b class="fc"><i>25</i>&nbsp;	public CS355Image() {</b>
+<b class="fc"><i>26</i>&nbsp;		pixels = null;</b>
+<b class="fc"><i>27</i>&nbsp;		width = 0;</b>
+<b class="fc"><i>28</i>&nbsp;		height = 0;</b>
+<b class="fc"><i>29</i>&nbsp;	}</b>
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;	/**
+<i>32</i>&nbsp;	 * A constructor that creates an Image of a certain size.
+<i>33</i>&nbsp;	 * It is initialized to default black.
+<i>34</i>&nbsp;	 * @param width the width of the image to create.
+<i>35</i>&nbsp;	 * @param height the height of the image to create.
+<i>36</i>&nbsp;	 */
+<b class="nc"><i>37</i>&nbsp;	public CS355Image(int width, int height) {</b>
+<b class="nc"><i>38</i>&nbsp;		initPixels(width, height);</b>
+<b class="nc"><i>39</i>&nbsp;	}</b>
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;	/**
+<i>42</i>&nbsp;	 * Called from the ViewRefresher to get a BufferedImage for drawing.
+<i>43</i>&nbsp;	 * I would suggest that you make this as efficient as possible, or
+<i>44</i>&nbsp;	 * maybe you could try to only call it when necessary.
+<i>45</i>&nbsp;	 * @return the BufferedImage that will be drawn to the screen.
+<i>46</i>&nbsp;	 */
+<i>47</i>&nbsp;	public abstract BufferedImage getImage();
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;	/**
+<i>50</i>&nbsp;	 * Called from the controller to do edge detection.
+<i>51</i>&nbsp;	 */
+<i>52</i>&nbsp;	public abstract void edgeDetection();
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;	/**
+<i>55</i>&nbsp;	 * Called from the controller to do a sharpen operation.
+<i>56</i>&nbsp;	 */
+<i>57</i>&nbsp;	public abstract void sharpen();
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;	/**
+<i>60</i>&nbsp;	 * Called from the controller to do color median blur.
+<i>61</i>&nbsp;	 */
+<i>62</i>&nbsp;	public abstract void medianBlur();
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;	/**
+<i>65</i>&nbsp;	 * Called from the controller to do uniform blur.
+<i>66</i>&nbsp;	 */
+<i>67</i>&nbsp;	public abstract void uniformBlur();
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;	/**
+<i>70</i>&nbsp;	 * Called from the controller to make the image grayscale.
+<i>71</i>&nbsp;	 */
+<i>72</i>&nbsp;	public abstract void grayscale();
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;	/**
+<i>75</i>&nbsp;	 * Called from the controller to change the contrast.
+<i>76</i>&nbsp;	 * @param amount the amount of contrast to add (could be negative).
+<i>77</i>&nbsp;	 */
+<i>78</i>&nbsp;	public abstract void contrast(int amount);
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;	/**
+<i>81</i>&nbsp;	 * Called from the controller to change the brightness.
+<i>82</i>&nbsp;	 * @param amount the amount of brightness to add (could be negative).
+<i>83</i>&nbsp;	 */
+<i>84</i>&nbsp;	public abstract void brightness(int amount);
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;	// Implemented methods.
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;	/**
+<i>89</i>&nbsp;	 * Sets the data in this image to be the
+<i>90</i>&nbsp;	 * same as the provided CS355Image. Be
+<i>91</i>&nbsp;	 * warned: this does a shallow copy.
+<i>92</i>&nbsp;	 * @param img the CS355Image to copy.
+<i>93</i>&nbsp;	 */
+<i>94</i>&nbsp;	public void setPixels(CS355Image img) {
+<b class="nc"><i>95</i>&nbsp;		this.pixels = img.pixels;</b>
+<b class="nc"><i>96</i>&nbsp;		this.width = img.width;</b>
+<b class="nc"><i>97</i>&nbsp;		this.height = img.height;</b>
+<b class="nc"><i>98</i>&nbsp;	}</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;	/**
+<i>101</i>&nbsp;	 * Sets the pixels according to the BufferedImage.
+<i>102</i>&nbsp;	 * This basically initializes the image.
+<i>103</i>&nbsp;	 * @param bi the BufferedImage whose data we want.
+<i>104</i>&nbsp;	 */
+<i>105</i>&nbsp;	public void setPixels(BufferedImage bi) {
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;		// Initialize the members.
+<b class="fc"><i>108</i>&nbsp;		initPixels(bi.getWidth(), bi.getHeight());</b>
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;		// Get the raster.
+<b class="fc"><i>111</i>&nbsp;		WritableRaster r = bi.getRaster();</b>
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;		// An extra element, just in
+<i>114</i>&nbsp;		// case the image is ARGB.
+<b class="fc"><i>115</i>&nbsp;		int[] rgb = new int[4];</b>
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;		// Convert each pixel.
+<b class="fc"><i>118</i>&nbsp;		for (int y = 0; y &lt; height; ++y) {</b>
+<b class="fc"><i>119</i>&nbsp;			for (int x = 0; x &lt; width; ++x) {</b>
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;				// Get the pixel data from the raster.
+<b class="fc"><i>122</i>&nbsp;				r.getPixel(x, y, rgb);</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;				// I&#39;ll use a loop here. This method
+<i>125</i>&nbsp;				// won&#39;t be called that often.
+<b class="fc"><i>126</i>&nbsp;				for (int i = 0; i &lt; 3; ++i) {</b>
+<b class="fc"><i>127</i>&nbsp;					pixels[i].setPixel(x, y, rgb[i]);</b>
+<i>128</i>&nbsp;				}
+<i>129</i>&nbsp;			}
+<i>130</i>&nbsp;		}
+<b class="fc"><i>131</i>&nbsp;	}</b>
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;	/**
+<i>134</i>&nbsp;	 * Get all three channels from a particular pixel.
+<i>135</i>&nbsp;	 * @param x the x coordinate of the pixel.
+<i>136</i>&nbsp;	 * @param y the y coordinate of the pixel.
+<i>137</i>&nbsp;	 * @param data an array of 3+ ints to hold the data.
+<i>138</i>&nbsp;	 *			   If null or too small, an array will be
+<i>139</i>&nbsp;	 *			   allocated and returned. Otherwise, data
+<i>140</i>&nbsp;	 *			   will be filled and returned.
+<i>141</i>&nbsp;	 * @return the filled data array or a new allocated array.
+<i>142</i>&nbsp;	 */
+<i>143</i>&nbsp;	public int[] getPixel(int x, int y, int[] data) {
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;		// Validate or allocate the incoming array.
+<b class="fc"><i>146</i>&nbsp;		if (data == null || data.length &lt; 3) {</b>
+<b class="nc"><i>147</i>&nbsp;			data = new int[3];</b>
+<i>148</i>&nbsp;		}
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;		// I didn&#39;t do a loop for efficiency. This method
+<i>151</i>&nbsp;		// will be used a lot in tight inner loops, and
+<i>152</i>&nbsp;		// quite frankly, a loop would add a fair bit of
+<i>153</i>&nbsp;		// overhead that we don&#39;t need.
+<b class="fc"><i>154</i>&nbsp;		data[0] = pixels[0].getPixel(x, y);</b>
+<b class="fc"><i>155</i>&nbsp;		data[1] = pixels[1].getPixel(x, y);</b>
+<b class="fc"><i>156</i>&nbsp;		data[2] = pixels[2].getPixel(x, y);</b>
+<i>157</i>&nbsp;
+<b class="fc"><i>158</i>&nbsp;		return data;</b>
+<i>159</i>&nbsp;	}
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;	/**
+<i>162</i>&nbsp;	 * Set a pixel&#39;s channels with the provided data.
+<i>163</i>&nbsp;	 * This method doesn&#39;t care if the provided array
+<i>164</i>&nbsp;	 * has a length greater than 3, but it will throw
+<i>165</i>&nbsp;	 * an exception if the length is less.
+<i>166</i>&nbsp;	 * @param x the x coordinate of the pixel to set.
+<i>167</i>&nbsp;	 * @param y the y coordinate of the pixel to set.
+<i>168</i>&nbsp;	 * @param data the data to put in the channels.
+<i>169</i>&nbsp;	 */
+<i>170</i>&nbsp;	public void setPixel(int x, int y, int[] data) {
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;		// Validation!
+<b class="fc"><i>173</i>&nbsp;		if (data.length &lt; 3) {</b>
+<b class="nc"><i>174</i>&nbsp;			throw new IllegalArgumentException(&quot;Pixel data must have at least three channels&quot;);</b>
+<i>175</i>&nbsp;		}
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;		// Again, no loop for efficiency.
+<b class="fc"><i>178</i>&nbsp;		pixels[0].setPixel(x, y, data[0]);</b>
+<b class="fc"><i>179</i>&nbsp;		pixels[1].setPixel(x, y, data[1]);</b>
+<b class="fc"><i>180</i>&nbsp;		pixels[2].setPixel(x, y, data[2]);</b>
+<b class="fc"><i>181</i>&nbsp;	}</b>
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;	/**
+<i>184</i>&nbsp;	 * Get the red of a particular pixel.
+<i>185</i>&nbsp;	 * @param x the x coordinate of the pixel.
+<i>186</i>&nbsp;	 * @param y the y coordinate of the pixel.
+<i>187</i>&nbsp;	 * @return the red of the pixel between 0 and 255.
+<i>188</i>&nbsp;	 */
+<i>189</i>&nbsp;	public int getRed(int x, int y) {
+<b class="nc"><i>190</i>&nbsp;		return pixels[0].getPixel(x, y);</b>
+<i>191</i>&nbsp;	}
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;	/**
+<i>194</i>&nbsp;	 * Set the red of a particular pixel.
+<i>195</i>&nbsp;	 * @param x the x coordinate of the pixel.
+<i>196</i>&nbsp;	 * @param y the y coordinate of the pixel.
+<i>197</i>&nbsp;	 * @param red the new red for the pixel.
+<i>198</i>&nbsp;	 */
+<i>199</i>&nbsp;	public void setRed(int x, int y, int red) {
+<b class="nc"><i>200</i>&nbsp;		pixels[0].setPixel(x, y, red);</b>
+<b class="nc"><i>201</i>&nbsp;	}</b>
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;	/**
+<i>204</i>&nbsp;	 * Get the green of a particular pixel.
+<i>205</i>&nbsp;	 * @param x the x coordinate of the pixel.
+<i>206</i>&nbsp;	 * @param y the y coordinate of the pixel.
+<i>207</i>&nbsp;	 * @return the green of the pixel between 0 and 255.
+<i>208</i>&nbsp;	 */
+<i>209</i>&nbsp;	public int getGreen(int x, int y) {
+<b class="nc"><i>210</i>&nbsp;		return pixels[1].getPixel(x, y);</b>
+<i>211</i>&nbsp;	}
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;	/**
+<i>214</i>&nbsp;	 * Set the green of a particular pixel.
+<i>215</i>&nbsp;	 * @param x the x coordinate of the pixel.
+<i>216</i>&nbsp;	 * @param y the y coordinate of the pixel.
+<i>217</i>&nbsp;	 * @param green the new green for the pixel.
+<i>218</i>&nbsp;	 */
+<i>219</i>&nbsp;	public void setGreen(int x, int y, int green) {
+<b class="nc"><i>220</i>&nbsp;		pixels[1].setPixel(x, y, green);</b>
+<b class="nc"><i>221</i>&nbsp;	}</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;	/**
+<i>224</i>&nbsp;	 * Get the blue of a particular pixel.
+<i>225</i>&nbsp;	 * @param x the x coordinate of the pixel.
+<i>226</i>&nbsp;	 * @param y the y coordinate of the pixel.
+<i>227</i>&nbsp;	 * @return the blue of the pixel between 0 and 255.
+<i>228</i>&nbsp;	 */
+<i>229</i>&nbsp;	public int getBlue(int x, int y) {
+<b class="nc"><i>230</i>&nbsp;		return pixels[2].getPixel(x, y);</b>
+<i>231</i>&nbsp;	}
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;	/**
+<i>234</i>&nbsp;	 * Set the blue of a particular pixel.
+<i>235</i>&nbsp;	 * @param x the x coordinate of the pixel.
+<i>236</i>&nbsp;	 * @param y the y coordinate of the pixel.
+<i>237</i>&nbsp;	 * @param blue the new blue for the pixel.
+<i>238</i>&nbsp;	 */
+<i>239</i>&nbsp;	public void setBlue(int x, int y, int blue) {
+<b class="nc"><i>240</i>&nbsp;		pixels[2].setPixel(x, y, blue);</b>
+<b class="nc"><i>241</i>&nbsp;	}</b>
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;	/**
+<i>244</i>&nbsp;	 * Get the width of the image.
+<i>245</i>&nbsp;	 * @return the width of the image.
+<i>246</i>&nbsp;	 */
+<i>247</i>&nbsp;	public int getWidth() {
+<b class="fc"><i>248</i>&nbsp;		return width;</b>
+<i>249</i>&nbsp;	}
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;	/**
+<i>252</i>&nbsp;	 * Get the height of the image.
+<i>253</i>&nbsp;	 * @return the height of the image.
+<i>254</i>&nbsp;	 */
+<i>255</i>&nbsp;	public int getHeight() {
+<b class="fc"><i>256</i>&nbsp;		return height;</b>
+<i>257</i>&nbsp;	}
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;	/**
+<i>260</i>&nbsp;	 * Opens an image file and converts it to the in-memory format.
+<i>261</i>&nbsp;	 * @param f the file to open.
+<i>262</i>&nbsp;	 * @return true if successful, false otherwise.
+<i>263</i>&nbsp;	 */
+<i>264</i>&nbsp;	public boolean open(File f) {
+<i>265</i>&nbsp;
+<b class="fc"><i>266</i>&nbsp;		BufferedImage img = null;</b>
+<i>267</i>&nbsp;		try {
+<i>268</i>&nbsp;			// Read the file in.
+<b class="fc"><i>269</i>&nbsp;			img = javax.imageio.ImageIO.read(f);</b>
+<i>270</i>&nbsp;
+<i>271</i>&nbsp;			// Complain if necessary.
+<b class="fc"><i>272</i>&nbsp;			if (img == null) {</b>
+<b class="nc"><i>273</i>&nbsp;				throw new IOException(&quot;Unable to read image&quot;);</b>
+<i>274</i>&nbsp;			}
+<i>275</i>&nbsp;		}
+<b class="nc"><i>276</i>&nbsp;		catch (IOException ex) {</b>
+<b class="nc"><i>277</i>&nbsp;			Logger.getLogger(CS355Image.class.getName()).log(Level.SEVERE, null, ex);</b>
+<b class="nc"><i>278</i>&nbsp;			return false;</b>
+<b class="fc"><i>279</i>&nbsp;		}</b>
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;		// Convert.
+<b class="fc"><i>282</i>&nbsp;		setPixels(img);</b>
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;		// Notify observers. Let this be an example to you.
+<b class="fc"><i>285</i>&nbsp;		this.setChanged();</b>
+<b class="fc"><i>286</i>&nbsp;		this.notifyObservers();</b>
+<i>287</i>&nbsp;
+<b class="fc"><i>288</i>&nbsp;		return true;</b>
+<i>289</i>&nbsp;	}
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;	/**
+<i>292</i>&nbsp;	 * Saves an image file out to disk.
+<i>293</i>&nbsp;	 * @param f the file to save to.
+<i>294</i>&nbsp;	 * @return true if successful, false otherwise.
+<i>295</i>&nbsp;	 */
+<i>296</i>&nbsp;	public boolean save(File f) {
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;		// Figure out which image type it is.
+<b class="fc"><i>299</i>&nbsp;		int dot = f.getName().lastIndexOf(&#39;.&#39;);</b>
+<b class="fc"><i>300</i>&nbsp;		String suffix = f.getName().substring(dot + 1);</b>
+<b class="fc"><i>301</i>&nbsp;		ImageWriter writer = javax.imageio.ImageIO.getImageWritersBySuffix(suffix).next();</b>
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;		// Get the BufferedImage that
+<i>304</i>&nbsp;		// we&#39;ll write out to disk.
+<b class="fc"><i>305</i>&nbsp;		BufferedImage img = this.getImage();</b>
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;		// Write out the image.
+<b class="fc"><i>308</i>&nbsp;		try (ImageOutputStream out = javax.imageio.ImageIO.createImageOutputStream(f)) {</b>
+<b class="fc"><i>309</i>&nbsp;			writer.setOutput(out);</b>
+<b class="fc"><i>310</i>&nbsp;			writer.write(img);</b>
+<b class="fc"><i>311</i>&nbsp;		}</b>
+<b class="nc"><i>312</i>&nbsp;		catch (IOException ex) {</b>
+<b class="nc"><i>313</i>&nbsp;			Logger.getLogger(CS355Image.class.getName()).log(Level.SEVERE, null, ex);</b>
+<b class="nc"><i>314</i>&nbsp;			return false;</b>
+<b class="fc"><i>315</i>&nbsp;		}</b>
+<i>316</i>&nbsp;
+<b class="fc"><i>317</i>&nbsp;		return true;</b>
+<i>318</i>&nbsp;	}
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;	/**
+<i>321</i>&nbsp;	 * A helper method to allocate the pixel data.
+<i>322</i>&nbsp;	 * @param width the width of the image to allocate.
+<i>323</i>&nbsp;	 * @param height the height of the image to allocate.
+<i>324</i>&nbsp;	 */
+<i>325</i>&nbsp;	private void initPixels(int width, int height) {
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;		// Standard assignments.
+<b class="fc"><i>328</i>&nbsp;		this.width = width;</b>
+<b class="fc"><i>329</i>&nbsp;		this.height = height;</b>
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;		// Create the channels.
+<b class="fc"><i>332</i>&nbsp;		pixels = new Channel[] { new Channel(width, height),</b>
+<i>333</i>&nbsp;								 new Channel(width, height),
+<i>334</i>&nbsp;								 new Channel(width, height) };
+<b class="fc"><i>335</i>&nbsp;	}</b>
+<i>336</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

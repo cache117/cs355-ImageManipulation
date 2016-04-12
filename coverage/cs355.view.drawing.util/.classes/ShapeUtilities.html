@@ -1,0 +1,305 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ShapeUtilities</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.view.drawing.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ShapeUtilities (cs355.view.drawing.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ShapeUtilities</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.9%
+  </span>
+  <span class="absValue">
+    (13/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.2%
+  </span>
+  <span class="absValue">
+    (54/ 55)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.view.drawing.util;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.awt.geom.Point2D;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;/**
+<i>6</i>&nbsp; * Utilities to make Shape selecting and drawing easier.
+<i>7</i>&nbsp; */
+<b class="nc"><i>8</i>&nbsp;public class ShapeUtilities</b>
+<i>9</i>&nbsp;{
+<i>10</i>&nbsp;    /**
+<i>11</i>&nbsp;     * Calculates the symmetric point that is closest to the dragged to point. This method tries to make the shape&#39;s edges
+<i>12</i>&nbsp;     * draw as close to the mouse as possible.
+<i>13</i>&nbsp;     *
+<i>14</i>&nbsp;     * @param startPoint   the starting point of the shape.
+<i>15</i>&nbsp;     * @param draggedPoint the end point of the shape.
+<i>16</i>&nbsp;     * @return the end point that makes the shape symmetric.
+<i>17</i>&nbsp;     */
+<i>18</i>&nbsp;    public static Point2D.Double calculateSymmetricPoint(Point2D.Double startPoint, Point2D.Double draggedPoint)
+<i>19</i>&nbsp;    {
+<b class="fc"><i>20</i>&nbsp;        int startX = (int) startPoint.x;</b>
+<b class="fc"><i>21</i>&nbsp;        int startY = (int) startPoint.y;</b>
+<b class="fc"><i>22</i>&nbsp;        int draggedX = (int) draggedPoint.x;</b>
+<b class="fc"><i>23</i>&nbsp;        int draggedY = (int) draggedPoint.y;</b>
+<b class="fc"><i>24</i>&nbsp;        int xDistance = draggedX - startX;</b>
+<b class="fc"><i>25</i>&nbsp;        int yDistance = draggedY - startY;</b>
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;        Point2D.Double symmetricPoint;
+<b class="fc"><i>28</i>&nbsp;        int comparison = Integer.compare(Math.abs(xDistance), Math.abs(yDistance));</b>
+<i>29</i>&nbsp;
+<b class="fc"><i>30</i>&nbsp;        if (xDistance &lt; 0)</b>
+<i>31</i>&nbsp;        {
+<b class="fc"><i>32</i>&nbsp;            if (yDistance &lt; 0)</b>
+<b class="fc"><i>33</i>&nbsp;                symmetricPoint = getPositiveSymmetricPoint(comparison, startX, draggedX, xDistance, startY, draggedY, yDistance);</b>
+<i>34</i>&nbsp;            else
+<b class="fc"><i>35</i>&nbsp;                symmetricPoint = getNegativeSymmetricPoint(comparison, startX, draggedX, xDistance, startY, draggedY, yDistance);</b>
+<b class="fc"><i>36</i>&nbsp;        } else if (xDistance &gt; 0)</b>
+<i>37</i>&nbsp;        {
+<b class="fc"><i>38</i>&nbsp;            if (yDistance &lt; 0)</b>
+<b class="fc"><i>39</i>&nbsp;                symmetricPoint = getNegativeSymmetricPoint(comparison, startX, draggedX, xDistance, startY, draggedY, yDistance);</b>
+<i>40</i>&nbsp;            else
+<b class="fc"><i>41</i>&nbsp;                symmetricPoint = getPositiveSymmetricPoint(comparison, startX, draggedX, xDistance, startY, draggedY, yDistance);</b>
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;        } else
+<b class="fc"><i>44</i>&nbsp;            symmetricPoint = draggedPoint;</b>
+<i>45</i>&nbsp;
+<b class="fc"><i>46</i>&nbsp;        return symmetricPoint;</b>
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    private static Point2D.Double getPositiveSymmetricPoint(int comparison, int startX, int draggedX, int xDistance, int startY, int draggedY, int yDistance)
+<i>50</i>&nbsp;    {
+<i>51</i>&nbsp;        Point2D.Double symmetricPoint;
+<b class="fc"><i>52</i>&nbsp;        if (comparison &lt; 0)</b>
+<b class="fc"><i>53</i>&nbsp;            symmetricPoint = new Point2D.Double(startX + yDistance, draggedY);</b>
+<i>54</i>&nbsp;        else
+<b class="fc"><i>55</i>&nbsp;            symmetricPoint = new Point2D.Double(draggedX, startY + xDistance);</b>
+<b class="fc"><i>56</i>&nbsp;        return symmetricPoint;</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    private static Point2D.Double getNegativeSymmetricPoint(int comparison, int startX, int draggedX, int xDistance, int startY, int draggedY, int yDistance)
+<i>60</i>&nbsp;    {
+<i>61</i>&nbsp;        Point2D.Double symmetricPoint;
+<b class="fc"><i>62</i>&nbsp;        if (comparison &lt; 0)</b>
+<b class="fc"><i>63</i>&nbsp;            symmetricPoint = new Point2D.Double(startX - yDistance, draggedY);</b>
+<i>64</i>&nbsp;        else
+<b class="fc"><i>65</i>&nbsp;            symmetricPoint = new Point2D.Double(draggedX, startY - xDistance);</b>
+<b class="fc"><i>66</i>&nbsp;        return symmetricPoint;</b>
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    private static double getLowerXBoundOfBox(double centerX, double width)
+<i>70</i>&nbsp;    {
+<b class="fc"><i>71</i>&nbsp;        return centerX - (width / 2.0);</b>
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    private static double getUpperXBoundOfBox(double centerX, double width)
+<i>75</i>&nbsp;    {
+<b class="fc"><i>76</i>&nbsp;        return centerX + (width / 2.0);</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    private static double getLowerYBoundOfBox(double centerY, double height)
+<i>80</i>&nbsp;    {
+<b class="fc"><i>81</i>&nbsp;        return centerY - (height / 2.0);</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    private static double getUpperYBoundOfBox(double centerY, double height)
+<i>85</i>&nbsp;    {
+<b class="fc"><i>86</i>&nbsp;        return centerY + (height / 2.0);</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /**
+<i>90</i>&nbsp;     * Checks whether or not a point is in a bounding box.
+<i>91</i>&nbsp;     *
+<i>92</i>&nbsp;     * @param point  the point.
+<i>93</i>&nbsp;     * @param center the center of the bounding box
+<i>94</i>&nbsp;     * @param width  the width of the bounding box
+<i>95</i>&nbsp;     * @param height the height of the bounding box
+<i>96</i>&nbsp;     * @return true if the point is in the bounding box, false otherwise.
+<i>97</i>&nbsp;     */
+<i>98</i>&nbsp;    public static boolean pointInBoundingBox(Point2D.Double point, Point2D.Double center, double width, double height)
+<i>99</i>&nbsp;    {
+<b class="fc"><i>100</i>&nbsp;        double lowerXBound = getLowerXBoundOfBox(center.x, width);</b>
+<b class="fc"><i>101</i>&nbsp;        double upperXBound = getUpperXBoundOfBox(center.x, width);</b>
+<b class="fc"><i>102</i>&nbsp;        double lowerYBound = getLowerYBoundOfBox(center.y, height);</b>
+<b class="fc"><i>103</i>&nbsp;        double upperYBound = getUpperYBoundOfBox(center.y, height);</b>
+<b class="fc"><i>104</i>&nbsp;        return ((point.x &gt;= lowerXBound &amp;&amp; point.x &lt;= upperXBound) &amp;&amp; (point.y &gt;= lowerYBound &amp;&amp; point.y &lt;= upperYBound));</b>
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    /**
+<i>108</i>&nbsp;     * Checks whether or not a point is in a bounding circle.
+<i>109</i>&nbsp;     *
+<i>110</i>&nbsp;     * @param point  the point.
+<i>111</i>&nbsp;     * @param center the center of the bounding circle
+<i>112</i>&nbsp;     * @param radius the radius of the bounding circle
+<i>113</i>&nbsp;     * @return true if the point is in the bounding circle, false otherwise.
+<i>114</i>&nbsp;     */
+<i>115</i>&nbsp;    public static boolean pointInBoundingCircle(Point2D.Double point, Point2D.Double center, double radius)
+<i>116</i>&nbsp;    {
+<b class="fc"><i>117</i>&nbsp;        double distance = Point2D.distance(point.x, point.y, center.x, center.y);</b>
+<b class="fc"><i>118</i>&nbsp;        return distance &lt;= radius;</b>
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    /**
+<i>122</i>&nbsp;     * Checks whether or not a point is in an ellipse.
+<i>123</i>&nbsp;     *
+<i>124</i>&nbsp;     * @param point   the point.
+<i>125</i>&nbsp;     * @param center  the center of the ellipse
+<i>126</i>&nbsp;     * @param xRadius the xRadius of the ellipse
+<i>127</i>&nbsp;     * @param yRadius the yRadius of the ellipse
+<i>128</i>&nbsp;     * @return true if the point is in the ellipse, false otherwise.
+<i>129</i>&nbsp;     */
+<i>130</i>&nbsp;    public static boolean pointInEllipse(Point2D.Double point, Point2D.Double center, double xRadius, double yRadius)
+<i>131</i>&nbsp;    {
+<b class="fc"><i>132</i>&nbsp;        return (Math.pow(((point.x - center.x) / xRadius), 2) + Math.pow(((point.y - center.y) / yRadius), 2) &lt;= 1);</b>
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    /**
+<i>136</i>&nbsp;     * Checks whether the given point is in a triangle by using the dot product of vectors of each side of the triangle.
+<i>137</i>&nbsp;     *
+<i>138</i>&nbsp;     * @param point the point.
+<i>139</i>&nbsp;     * @param a     one of the vertices of the triangle.
+<i>140</i>&nbsp;     * @param b     one of the vertices of the triangle.
+<i>141</i>&nbsp;     * @param c     one of the vertices of the triangle.
+<i>142</i>&nbsp;     * @return true if the point is in the triangle.
+<i>143</i>&nbsp;     * @see Vector2D
+<i>144</i>&nbsp;     */
+<i>145</i>&nbsp;    public static boolean pointInTriangle(Point2D.Double point, Point2D.Double a, Point2D.Double b, Point2D.Double c)
+<i>146</i>&nbsp;    {
+<b class="fc"><i>147</i>&nbsp;        Vector2D q = new Vector2D(point);</b>
+<b class="fc"><i>148</i>&nbsp;        Vector2D p0 = new Vector2D(a);</b>
+<b class="fc"><i>149</i>&nbsp;        Vector2D p1 = new Vector2D(b);</b>
+<b class="fc"><i>150</i>&nbsp;        Vector2D p2 = new Vector2D(c);</b>
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;        //(q-p0)*(p1-p0).orthog()
+<b class="fc"><i>153</i>&nbsp;        double firstDotProduct = (q.subtract(p0)).dotProduct(p1.subtract(p0).orthogonalize());</b>
+<b class="fc"><i>154</i>&nbsp;        double secondDotProduct = (q.subtract(p1)).dotProduct(p2.subtract(p1).orthogonalize());</b>
+<b class="fc"><i>155</i>&nbsp;        double thirdDotProduct = (q.subtract(p2)).dotProduct(p0.subtract(p2).orthogonalize());</b>
+<b class="fc"><i>156</i>&nbsp;        return allSameSign(firstDotProduct, secondDotProduct, thirdDotProduct);</b>
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    /**
+<i>160</i>&nbsp;     * Checks to see if the point is close enough to the line segment.
+<i>161</i>&nbsp;     *
+<i>162</i>&nbsp;     * @param point     the point.
+<i>163</i>&nbsp;     * @param lineStart the start of the line.
+<i>164</i>&nbsp;     * @param lineEnd   the end of the line.
+<i>165</i>&nbsp;     * @param tolerance how much tolerance to each side of the line to check in.
+<i>166</i>&nbsp;     * @return true if the point is close enough to the line, based on the tolerance.
+<i>167</i>&nbsp;     */
+<i>168</i>&nbsp;    public static boolean pointCloseEnoughToLine(Point2D.Double point, Point2D.Double lineStart, Point2D.Double lineEnd, double tolerance)
+<i>169</i>&nbsp;    {
+<i>170</i>&nbsp;        //q&#39; = q + (d - q * n^)*n^
+<b class="fc"><i>171</i>&nbsp;        Vector2D pointToCheck = new Vector2D(point);</b>
+<b class="fc"><i>172</i>&nbsp;        Vector2D start = new Vector2D(lineStart);</b>
+<b class="fc"><i>173</i>&nbsp;        Vector2D end = new Vector2D(lineEnd);</b>
+<b class="fc"><i>174</i>&nbsp;        Vector2D normalToLine = Vector2D.calculateNormal(start, end);</b>
+<b class="fc"><i>175</i>&nbsp;        double lineDistanceFromOrigin = start.dotProduct(normalToLine);</b>
+<b class="fc"><i>176</i>&nbsp;        Vector2D nearestPointOnLine = pointToCheck.add(normalToLine.applyScaling(lineDistanceFromOrigin - (pointToCheck.dotProduct(normalToLine))));</b>
+<b class="fc"><i>177</i>&nbsp;        double pointDistanceFromLine = nearestPointOnLine.length(pointToCheck);</b>
+<b class="fc"><i>178</i>&nbsp;        return pointDistanceFromLine &lt;= tolerance;</b>
+<i>179</i>&nbsp;        /*
+<i>180</i>&nbsp;        //Nicks
+<i>181</i>&nbsp;        double startX = lineStart.getX();		//p0
+<i>182</i>&nbsp;        double startY = lineStart.getY();		//p0
+<i>183</i>&nbsp;        double endX = lineEnd.getX();		//p1
+<i>184</i>&nbsp;        double endY = lineEnd.getY();		//p1
+<i>185</i>&nbsp;        double length = Math.sqrt((Math.pow((endX-startX), 2) + Math.pow((endY-startY), 2)));	// a2+b2 = c2
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;        Point2D.Double dHat = new Point2D.Double(((endX-startX)/length), ((endY-startY)/length)); //(p1 - p0 / length of line)
+<i>188</i>&nbsp;        double tx = (x - startX) * dHat.getX();	//(q-p0)*dHat
+<i>189</i>&nbsp;        double ty = (y - startY) * dHat.getY();	//(q-p0)*dHat
+<i>190</i>&nbsp;        double t = tx + ty;
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;        Point2D.Double q = new Point2D.Double((startX + t*dHat.getX()), (startY + t*dHat.getY()));	//q = p0 + t * dHat
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;        double distance = Math.sqrt(Math.pow((q.getX()-x), 2) + Math.pow((q.getY()-y), 2));	//distance to line -&gt; pythagorean
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;        return distance &lt;= 4;
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;        //Amanda
+<i>199</i>&nbsp;        double X0 = pt.getX();
+<i>200</i>&nbsp;        double Y0 = pt.getY();
+<i>201</i>&nbsp;        double X1 = center.getX();
+<i>202</i>&nbsp;        double Y1 = center.getY();
+<i>203</i>&nbsp;        double X2 = end.getX();
+<i>204</i>&nbsp;        double Y2 = end.getY();
+<i>205</i>&nbsp;        double slope = (Y2-Y1)/(X2-X1);
+<i>206</i>&nbsp;        double tangentSlope = -1/slope;
+<i>207</i>&nbsp;        double degree = Math.atan(tangentSlope);
+<i>208</i>&nbsp;        Y0 += Math.sin(degree);
+<i>209</i>&nbsp;        X0 += Math.cos(degree);
+<i>210</i>&nbsp;        if (X0 &lt;= (Math.max(X1, X2)+tolerance) &amp;&amp; X0 &gt;= (Math.min(X1,X2)-tolerance) &amp;&amp; Y0 &lt;= (Math.max(Y1,Y2)+tolerance) &amp;&amp; Y0 &gt;= (Math.min(Y1, Y2)-tolerance))
+<i>211</i>&nbsp;        {
+<i>212</i>&nbsp;            return true;
+<i>213</i>&nbsp;        }
+<i>214</i>&nbsp;        return false;
+<i>215</i>&nbsp;        */
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;    private static boolean allSameSign(double first, double second, double third)
+<i>219</i>&nbsp;    {
+<b class="fc"><i>220</i>&nbsp;        return (first &gt; 0 &amp;&amp; second &gt; 0 &amp;&amp; third &gt; 0) || (first &lt; 0 &amp;&amp; second &lt; 0 &amp;&amp; third &lt; 0);</b>
+<i>221</i>&nbsp;    }
+<i>222</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

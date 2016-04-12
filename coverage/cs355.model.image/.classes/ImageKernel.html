@@ -1,0 +1,296 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ImageKernel</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.model.image</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ImageKernel (cs355.model.image)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ImageKernel</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    82.6%
+  </span>
+  <span class="absValue">
+    (19/ 23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    74.1%
+  </span>
+  <span class="absValue">
+    (63/ 85)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.model.image;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.awt.*;
+<i>4</i>&nbsp;import java.util.ArrayList;
+<i>5</i>&nbsp;import java.util.Collections;
+<i>6</i>&nbsp;import java.util.List;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import static cs355.model.image.DrawingImage.*;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;/**
+<i>11</i>&nbsp; * Represents a 9-tuple set of pixels in an image.
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; */
+<i>14</i>&nbsp;public class ImageKernel
+<i>15</i>&nbsp;{
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    private final ArrayList&lt;int[]&gt; pixels;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    public ImageKernel(int[] m00, int[] m10, int[] m20,
+<i>20</i>&nbsp;                        int[] m01, int[] m11, int[] m21,
+<i>21</i>&nbsp;                        int[] m02, int[] m12, int[] m22)
+<b class="fc"><i>22</i>&nbsp;    {</b>
+<b class="fc"><i>23</i>&nbsp;        pixels = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>24</i>&nbsp;        pixels.add(m00);</b>
+<b class="fc"><i>25</i>&nbsp;        pixels.add(m10);</b>
+<b class="fc"><i>26</i>&nbsp;        pixels.add(m20);</b>
+<b class="fc"><i>27</i>&nbsp;        pixels.add(m01);</b>
+<b class="fc"><i>28</i>&nbsp;        pixels.add(m11);</b>
+<b class="fc"><i>29</i>&nbsp;        pixels.add(m21);</b>
+<b class="fc"><i>30</i>&nbsp;        pixels.add(m02);</b>
+<b class="fc"><i>31</i>&nbsp;        pixels.add(m12);</b>
+<b class="fc"><i>32</i>&nbsp;        pixels.add(m22);</b>
+<b class="fc"><i>33</i>&nbsp;    }</b>
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    private List&lt;Integer&gt; getColorChannel(int colorType)
+<i>36</i>&nbsp;    {
+<b class="fc"><i>37</i>&nbsp;        List&lt;Integer&gt; colorChannel = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>38</i>&nbsp;        for (int i = 0; i &lt; pixels.size(); ++i)</b>
+<i>39</i>&nbsp;        {
+<b class="fc"><i>40</i>&nbsp;            colorChannel.add(pixels.get(i)[colorType]);</b>
+<i>41</i>&nbsp;        }
+<b class="fc"><i>42</i>&nbsp;        return colorChannel;</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public int[] medianBlur(int[] medianValue)
+<i>46</i>&nbsp;    {
+<b class="nc"><i>47</i>&nbsp;        int redMedian = getMedianValue(getColorChannel(RGB_RED));</b>
+<b class="nc"><i>48</i>&nbsp;        int greenMedian = getMedianValue(getColorChannel(RGB_GREEN));</b>
+<b class="nc"><i>49</i>&nbsp;        int blueMedian = getMedianValue(getColorChannel(RGB_BLUE));</b>
+<i>50</i>&nbsp;        //get closest actual pixel (least square distance (sum of square distances of each color. Like an xyz)
+<b class="nc"><i>51</i>&nbsp;        medianValue[RGB_RED] = redMedian;</b>
+<b class="nc"><i>52</i>&nbsp;        medianValue[RGB_GREEN] = greenMedian;</b>
+<b class="nc"><i>53</i>&nbsp;        medianValue[RGB_BLUE] = blueMedian;</b>
+<b class="nc"><i>54</i>&nbsp;        int[] closestValue = getM00();</b>
+<b class="nc"><i>55</i>&nbsp;        double lowestSquareDistance = getSquaredDistance(closestValue, medianValue);</b>
+<b class="nc"><i>56</i>&nbsp;        for (int i = 1; i &lt; pixels.size(); ++i)</b>
+<i>57</i>&nbsp;        {
+<b class="nc"><i>58</i>&nbsp;            int[] currentPixel = pixels.get(i);</b>
+<b class="nc"><i>59</i>&nbsp;            double squareDistance = getSquaredDistance(currentPixel, medianValue);</b>
+<b class="nc"><i>60</i>&nbsp;            if (squareDistance &lt; lowestSquareDistance)</b>
+<b class="nc"><i>61</i>&nbsp;                closestValue = currentPixel;</b>
+<i>62</i>&nbsp;        }
+<b class="nc"><i>63</i>&nbsp;        return closestValue;</b>
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    private int getMedianValue(List&lt;Integer&gt; colorChannel)
+<i>67</i>&nbsp;    {
+<b class="nc"><i>68</i>&nbsp;        Collections.sort(colorChannel);</b>
+<b class="nc"><i>69</i>&nbsp;        int medianIndex = 4;</b>
+<b class="nc"><i>70</i>&nbsp;        return colorChannel.get(medianIndex);</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    private double getSquaredDistance(int[] pixel, int[] medianValue)
+<i>74</i>&nbsp;    {
+<b class="nc"><i>75</i>&nbsp;        return square(pixel[RGB_RED] - medianValue[RGB_RED]) + square(pixel[RGB_GREEN] - medianValue[RGB_GREEN]) + square(pixel[RGB_BLUE] - medianValue[RGB_BLUE]);</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    public int[] uniformBlur(int[] rgb)
+<i>79</i>&nbsp;    {
+<b class="fc"><i>80</i>&nbsp;        int redMean = getMeanValue(getColorChannel(RGB_RED));</b>
+<b class="fc"><i>81</i>&nbsp;        int greenMean = getMeanValue(getColorChannel(RGB_GREEN));</b>
+<b class="fc"><i>82</i>&nbsp;        int blueMean = getMeanValue(getColorChannel(RGB_BLUE));</b>
+<b class="fc"><i>83</i>&nbsp;        rgb[RGB_RED] = redMean;</b>
+<b class="fc"><i>84</i>&nbsp;        rgb[RGB_GREEN] = greenMean;</b>
+<b class="fc"><i>85</i>&nbsp;        rgb[RGB_BLUE] = blueMean;</b>
+<b class="fc"><i>86</i>&nbsp;        return rgb;</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    private int getMeanValue(List&lt;Integer&gt; colorChannel)
+<i>90</i>&nbsp;    {
+<b class="fc"><i>91</i>&nbsp;        int total = 0;</b>
+<b class="fc"><i>92</i>&nbsp;        for (Integer each: colorChannel)</b>
+<i>93</i>&nbsp;        {
+<b class="fc"><i>94</i>&nbsp;            total += each;</b>
+<b class="fc"><i>95</i>&nbsp;        }</b>
+<b class="fc"><i>96</i>&nbsp;        return (int) Math.round(total / 9d);</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    public int[] edgeDetection(int[] rgb)
+<i>100</i>&nbsp;    {
+<b class="fc"><i>101</i>&nbsp;        float m00 = getBrightnessFromRGB(getM00());</b>
+<b class="fc"><i>102</i>&nbsp;        float m01 = getBrightnessFromRGB(getM01());</b>
+<b class="fc"><i>103</i>&nbsp;        float m02 = getBrightnessFromRGB(getM02());</b>
+<b class="fc"><i>104</i>&nbsp;        float m10 = getBrightnessFromRGB(getM10());</b>
+<b class="fc"><i>105</i>&nbsp;        float m12 = getBrightnessFromRGB(getM12());</b>
+<b class="fc"><i>106</i>&nbsp;        float m20 = getBrightnessFromRGB(getM20());</b>
+<b class="fc"><i>107</i>&nbsp;        float m21 = getBrightnessFromRGB(getM21());</b>
+<b class="fc"><i>108</i>&nbsp;        float m22 = getBrightnessFromRGB(getM22());</b>
+<b class="fc"><i>109</i>&nbsp;        float sobelX = sobelKernelX(m00, m20, m01, m21, m02, m22);</b>
+<b class="fc"><i>110</i>&nbsp;        float sobelY = sobelKernelY(m00, m10, m20, m02, m12, m22);</b>
+<b class="fc"><i>111</i>&nbsp;        float newBrightness = (float) Math.sqrt(square(sobelX) + square(sobelY));</b>
+<b class="fc"><i>112</i>&nbsp;        newBrightness = clipValue(newBrightness, 0f, 1f);</b>
+<b class="fc"><i>113</i>&nbsp;        int value = (int) (newBrightness * 255);</b>
+<b class="fc"><i>114</i>&nbsp;        rgb[RGB_RED] = value;</b>
+<b class="fc"><i>115</i>&nbsp;        rgb[RGB_GREEN] = value;</b>
+<b class="fc"><i>116</i>&nbsp;        rgb[RGB_BLUE] = value;</b>
+<b class="fc"><i>117</i>&nbsp;        return rgb;</b>
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    private float getBrightnessFromRGB(int[] rgb)
+<i>121</i>&nbsp;    {
+<b class="fc"><i>122</i>&nbsp;        return Color.RGBtoHSB(rgb[RGB_RED], rgb[RGB_GREEN], rgb[RGB_BLUE], null)[HSB_BRIGHTNESS];</b>
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    private static float square(float number)
+<i>126</i>&nbsp;    {
+<b class="fc"><i>127</i>&nbsp;        return (float) Math.pow(number, 2);</b>
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    private static float sobelKernelX(
+<i>131</i>&nbsp;            float m00, float m20,
+<i>132</i>&nbsp;            float m01, float m21,
+<i>133</i>&nbsp;            float m02, float m22
+<i>134</i>&nbsp;    )
+<i>135</i>&nbsp;    {
+<b class="fc"><i>136</i>&nbsp;        return ((-1 * m00) + (-2 * m01) + (-1 * m02) + m20 + (2 * m21) + m22) / 8f;</b>
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    private static float sobelKernelY(
+<i>140</i>&nbsp;            float m00, float m10, float m20,
+<i>141</i>&nbsp;            float m02, float m12, float m22)
+<i>142</i>&nbsp;    {
+<b class="fc"><i>143</i>&nbsp;        return ((-1 * m00) + (-2 * m10) + (-1 * m20) + m02+ (2 * m12) + m22) / 8f;</b>
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    public int[] sharpen(int[] rgb)
+<i>147</i>&nbsp;    {
+<b class="fc"><i>148</i>&nbsp;        for (int i = 0; i &lt; 3; ++i)</b>
+<i>149</i>&nbsp;        {
+<b class="fc"><i>150</i>&nbsp;            double value = ((6 * getM11()[i]) + (-1 * getM01()[i]) + (-1 * getM10()[i]) + (-1 * getM21()[i]) + (-1 * getM12()[i])) /2.0;</b>
+<b class="fc"><i>151</i>&nbsp;            value = clipValue(value, 0d, 255d);</b>
+<b class="fc"><i>152</i>&nbsp;            rgb[i] = (int) value;</b>
+<i>153</i>&nbsp;        }
+<b class="fc"><i>154</i>&nbsp;        return rgb;</b>
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    public int[] getM00()
+<i>158</i>&nbsp;    {
+<b class="fc"><i>159</i>&nbsp;        return pixels.get(0);</b>
+<i>160</i>&nbsp;    }
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    public int[] getM10()
+<i>163</i>&nbsp;    {
+<b class="fc"><i>164</i>&nbsp;        return pixels.get(1);</b>
+<i>165</i>&nbsp;    }
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    public int[] getM20()
+<i>168</i>&nbsp;    {
+<b class="fc"><i>169</i>&nbsp;        return pixels.get(2);</b>
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    public int[] getM01()
+<i>173</i>&nbsp;    {
+<b class="fc"><i>174</i>&nbsp;        return pixels.get(3);</b>
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    public int[] getM11()
+<i>178</i>&nbsp;    {
+<b class="fc"><i>179</i>&nbsp;        return pixels.get(4);</b>
+<i>180</i>&nbsp;    }
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;    public int[] getM21()
+<i>183</i>&nbsp;    {
+<b class="fc"><i>184</i>&nbsp;        return pixels.get(5);</b>
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    public int[] getM02()
+<i>188</i>&nbsp;    {
+<b class="fc"><i>189</i>&nbsp;        return pixels.get(6);</b>
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    public int[] getM12()
+<i>193</i>&nbsp;    {
+<b class="fc"><i>194</i>&nbsp;        return pixels.get(7);</b>
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    public int[] getM22()
+<i>198</i>&nbsp;    {
+<b class="fc"><i>199</i>&nbsp;        return pixels.get(8);</b>
+<i>200</i>&nbsp;    }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    @Override
+<i>203</i>&nbsp;    public String toString()
+<i>204</i>&nbsp;    {
+<b class="nc"><i>205</i>&nbsp;        return String.format(</b>
+<i>206</i>&nbsp;                &quot;|(%d, %d, %d) (%d, %d, %d)  (%d, %d, %d)|\n&quot; +
+<i>207</i>&nbsp;                &quot;|(%d, %d, %d) (%d, %d, %d)  (%d, %d, %d)|\n&quot; +
+<i>208</i>&nbsp;                &quot;|(%d, %d, %d) (%d, %d, %d)  (%d, %d, %d)|&quot;,
+<b class="nc"><i>209</i>&nbsp;                getM00()[RGB_RED], getM00()[RGB_GREEN], getM00()[RGB_BLUE],/**/getM01()[RGB_RED], getM01()[RGB_GREEN], getM01()[RGB_BLUE],/**/getM02()[RGB_RED], getM02()[RGB_GREEN], getM02()[RGB_BLUE],</b>
+<b class="nc"><i>210</i>&nbsp;                getM10()[RGB_RED], getM10()[RGB_GREEN], getM10()[RGB_BLUE],/**/getM11()[RGB_RED], getM11()[RGB_GREEN], getM11()[RGB_BLUE],/**/getM12()[RGB_RED], getM12()[RGB_GREEN], getM12()[RGB_BLUE],</b>
+<b class="nc"><i>211</i>&nbsp;                getM20()[RGB_RED], getM20()[RGB_GREEN], getM20()[RGB_BLUE],/**/getM21()[RGB_RED], getM21()[RGB_GREEN], getM21()[RGB_BLUE],/**/getM22()[RGB_RED], getM22()[RGB_GREEN], getM22()[RGB_BLUE]);</b>
+<i>212</i>&nbsp;    }
+<i>213</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,308 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Transform</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.view.drawing.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Transform (cs355.view.drawing.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Transform</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    68%
+  </span>
+  <span class="absValue">
+    (17/ 25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    70%
+  </span>
+  <span class="absValue">
+    (42/ 60)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.view.drawing.util;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cs355.model.scene.Point3D;
+<i>4</i>&nbsp;import cs355.view.DrawingParameters;
+<i>5</i>&nbsp;import cs355.view.ObjectParameters;
+<i>6</i>&nbsp;import cs355.view.ViewportParameters;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.awt.geom.AffineTransform;
+<i>9</i>&nbsp;import java.awt.geom.Point2D;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;/**
+<i>12</i>&nbsp; * Takes care of all point Transformations that are necessary related to Object, World, and View.
+<i>13</i>&nbsp; */
+<b class="nc"><i>14</i>&nbsp;public class Transform</b>
+<i>15</i>&nbsp;{
+<i>16</i>&nbsp;    /**
+<i>17</i>&nbsp;     * Compiles the information contained in the DrawingParameters and ObjectParameters and sets the transform of drawingParameters to be the related transform. Used for drawing.
+<i>18</i>&nbsp;     *
+<i>19</i>&nbsp;     * @param drawingParameters the information about the drawing and the view.
+<i>20</i>&nbsp;     * @param objectParameters  the information about the object being drawn.
+<i>21</i>&nbsp;     */
+<i>22</i>&nbsp;    public static void applyTransformationToGraphics(DrawingParameters drawingParameters, ObjectParameters objectParameters)
+<i>23</i>&nbsp;    {
+<b class="fc"><i>24</i>&nbsp;        AffineTransform affineTransform = buildObjectToViewTransformation(objectParameters, drawingParameters.viewportParameters);</b>
+<b class="fc"><i>25</i>&nbsp;        drawingParameters.graphics2D.setTransform(affineTransform);</b>
+<b class="fc"><i>26</i>&nbsp;    }</b>
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    /**
+<i>29</i>&nbsp;     * Gets the world point from the object point based on the transformation properties of the object.
+<i>30</i>&nbsp;     *
+<i>31</i>&nbsp;     * @param objectPoint      the object point to convert.
+<i>32</i>&nbsp;     * @param objectParameters the transformation information about the object.
+<i>33</i>&nbsp;     * @return the world point associated with the object point.
+<i>34</i>&nbsp;     */
+<i>35</i>&nbsp;    public static Point2D.Double getWorldPointFromObjectPoint(Point2D.Double objectPoint, ObjectParameters objectParameters)
+<i>36</i>&nbsp;    {
+<b class="fc"><i>37</i>&nbsp;        AffineTransform affineTransform = buildObjectToWorldTransformation(objectParameters);</b>
+<b class="fc"><i>38</i>&nbsp;        return applyTransformationToPoint(affineTransform, objectPoint);</b>
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    /**
+<i>42</i>&nbsp;     * Gets the object point from the world point based on the transformation properties of the object.
+<i>43</i>&nbsp;     *
+<i>44</i>&nbsp;     * @param worldPoint       the world point to convert.
+<i>45</i>&nbsp;     * @param objectParameters the transformation information about the object.
+<i>46</i>&nbsp;     * @return the object point associated with the world point.
+<i>47</i>&nbsp;     */
+<i>48</i>&nbsp;    public static Point2D.Double getObjectPointFromWorldPoint(Point2D.Double worldPoint, ObjectParameters objectParameters)
+<i>49</i>&nbsp;    {
+<b class="fc"><i>50</i>&nbsp;        AffineTransform affineTransform = buildWorldToObjectTransformation(objectParameters);</b>
+<b class="fc"><i>51</i>&nbsp;        return applyTransformationToPoint(affineTransform, worldPoint);</b>
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * Gets the object point from the view point based on the transformation properties of the object and viewport.
+<i>56</i>&nbsp;     *
+<i>57</i>&nbsp;     * @param viewPoint          the world point to convert.
+<i>58</i>&nbsp;     * @param objectParameters   the transformation information about the object.
+<i>59</i>&nbsp;     * @param viewportParameters the transformation information about the viewport.
+<i>60</i>&nbsp;     * @return the object point associated with the view point.
+<i>61</i>&nbsp;     */
+<i>62</i>&nbsp;    public static Point2D.Double getObjectPointFromViewPoint(Point2D.Double viewPoint, ObjectParameters objectParameters, ViewportParameters viewportParameters)
+<i>63</i>&nbsp;    {
+<b class="nc"><i>64</i>&nbsp;        AffineTransform affineTransform = buildViewToObjectTransformation(objectParameters, viewportParameters);</b>
+<b class="nc"><i>65</i>&nbsp;        return applyTransformationToPoint(affineTransform, viewPoint);</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    /**
+<i>69</i>&nbsp;     * Gets the view point from the object point based on the transformation properties of the object and viewport.
+<i>70</i>&nbsp;     *
+<i>71</i>&nbsp;     * @param objectPoint        the world point to convert.
+<i>72</i>&nbsp;     * @param objectParameters   the transformation information about the object.
+<i>73</i>&nbsp;     * @param viewportParameters the transformation information about the viewport.
+<i>74</i>&nbsp;     * @return the view point associated with the object point.
+<i>75</i>&nbsp;     */
+<i>76</i>&nbsp;    public static Point2D.Double getViewPointFromObjectPoint(Point2D.Double objectPoint, ObjectParameters objectParameters, ViewportParameters viewportParameters)
+<i>77</i>&nbsp;    {
+<b class="nc"><i>78</i>&nbsp;        AffineTransform affineTransform = buildObjectToViewTransformation(objectParameters, viewportParameters);</b>
+<b class="nc"><i>79</i>&nbsp;        return applyTransformationToPoint(affineTransform, objectPoint);</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    /**
+<i>83</i>&nbsp;     * Gets the world point from the view point based on the transformation properties of the viewport.
+<i>84</i>&nbsp;     *
+<i>85</i>&nbsp;     * @param viewPoint          the world point to convert.
+<i>86</i>&nbsp;     * @param viewportParameters the transformation information about the viewport.
+<i>87</i>&nbsp;     * @return the world point associated with the view point.
+<i>88</i>&nbsp;     */
+<i>89</i>&nbsp;    public static Point2D.Double getWorldPointFromViewPoint(Point2D.Double viewPoint, ViewportParameters viewportParameters)
+<i>90</i>&nbsp;    {
+<b class="fc"><i>91</i>&nbsp;        AffineTransform affineTransform = buildViewToWorldTransformation(viewportParameters);</b>
+<b class="fc"><i>92</i>&nbsp;        return applyTransformationToPoint(affineTransform, viewPoint);</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    /**
+<i>96</i>&nbsp;     * Gets the view point from the world point based on the transformation properties of the viewport.
+<i>97</i>&nbsp;     *
+<i>98</i>&nbsp;     * @param worldPoint         the world point to convert.
+<i>99</i>&nbsp;     * @param viewportParameters the transformation information about the viewport.
+<i>100</i>&nbsp;     * @return the view point associated with the world point.
+<i>101</i>&nbsp;     */
+<i>102</i>&nbsp;    public static Point2D.Double getViewPointFromWorldPoint(Point2D.Double worldPoint, ViewportParameters viewportParameters)
+<i>103</i>&nbsp;    {
+<b class="nc"><i>104</i>&nbsp;        AffineTransform affineTransform = buildWorldToViewTransformation(viewportParameters);</b>
+<b class="nc"><i>105</i>&nbsp;        return applyTransformationToPoint(affineTransform, worldPoint);</b>
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    public static Matrix buildObjectToWorldTransformation(Point3D objectPoint, double objectRotation)
+<i>109</i>&nbsp;    {
+<b class="fc"><i>110</i>&nbsp;        Matrix transformationMatrix = Matrix.translation(objectPoint);</b>
+<b class="fc"><i>111</i>&nbsp;        transformationMatrix = Matrix.multiply(transformationMatrix, Matrix.rotation(objectRotation));</b>
+<b class="fc"><i>112</i>&nbsp;        return transformationMatrix;</b>
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    public static Matrix buildWorldToCameraTransformation(Point3D cameraLocation, double cameraRotation)
+<i>116</i>&nbsp;    {
+<b class="fc"><i>117</i>&nbsp;        Matrix transformationMatrix = Matrix.rotation(cameraRotation);</b>
+<b class="fc"><i>118</i>&nbsp;        transformationMatrix = Matrix.multiply(transformationMatrix, Matrix.translation(-cameraLocation.x, -cameraLocation.y, -cameraLocation.z));</b>
+<b class="fc"><i>119</i>&nbsp;        return transformationMatrix;</b>
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    public static Vector3D applyTransformationToVector(Matrix matrix, Vector3D point)
+<i>123</i>&nbsp;    {
+<b class="nc"><i>124</i>&nbsp;        return Matrix.multiply(matrix, point);</b>
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    public static Point2D.Double getPoint2DFromPoint3D(Point3D point)
+<i>128</i>&nbsp;    {
+<b class="nc"><i>129</i>&nbsp;        Vector3D vector = new Vector3D(point);</b>
+<i>130</i>&nbsp;        //apply clipping
+<b class="nc"><i>131</i>&nbsp;        return new Point2D.Double(point.x, point.y);</b>
+<i>132</i>&nbsp;    }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    private static AffineTransform buildObjectToWorldTransformation(ObjectParameters objectParameters)
+<i>135</i>&nbsp;    {
+<b class="fc"><i>136</i>&nbsp;        AffineTransform affineTransform = buildTranslationTransform(objectParameters.center.x, objectParameters.center.y);</b>
+<b class="fc"><i>137</i>&nbsp;        affineTransform.concatenate(buildRotationTransform(objectParameters.rotation));</b>
+<b class="fc"><i>138</i>&nbsp;        return affineTransform;</b>
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    private static AffineTransform buildWorldToObjectTransformation(ObjectParameters objectParameters)
+<i>142</i>&nbsp;    {
+<b class="fc"><i>143</i>&nbsp;        AffineTransform affineTransform = buildRotationTransform(-objectParameters.rotation);</b>
+<b class="fc"><i>144</i>&nbsp;        affineTransform.concatenate(buildTranslationTransform(-objectParameters.center.x, -objectParameters.center.y));</b>
+<b class="fc"><i>145</i>&nbsp;        return affineTransform;</b>
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    public static AffineTransform buildWorldToViewTransformation(ViewportParameters viewportParameters)
+<i>149</i>&nbsp;    {
+<b class="fc"><i>150</i>&nbsp;        AffineTransform affineTransform = buildScalingTransform(viewportParameters.scalingFactor);</b>
+<b class="fc"><i>151</i>&nbsp;        affineTransform.concatenate(buildTranslationTransform(-viewportParameters.upperLeft.x, -viewportParameters.upperLeft.y));</b>
+<b class="fc"><i>152</i>&nbsp;        return affineTransform;</b>
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    private static AffineTransform buildViewToWorldTransformation(ViewportParameters viewportParameters)
+<i>156</i>&nbsp;    {
+<b class="fc"><i>157</i>&nbsp;        AffineTransform affineTransform = buildTranslationTransform(viewportParameters.upperLeft.x, viewportParameters.upperLeft.y);</b>
+<b class="fc"><i>158</i>&nbsp;        affineTransform.concatenate(buildScalingTransform(1.0 / viewportParameters.scalingFactor));</b>
+<b class="fc"><i>159</i>&nbsp;        return affineTransform;</b>
+<i>160</i>&nbsp;    }
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    private static AffineTransform buildObjectToViewTransformation(ObjectParameters objectParameters, ViewportParameters viewportParameters)
+<i>163</i>&nbsp;    {
+<i>164</i>&nbsp;        //TODO these might need to be swapped.
+<b class="fc"><i>165</i>&nbsp;        AffineTransform affineTransform = buildWorldToViewTransformation(viewportParameters);</b>
+<b class="fc"><i>166</i>&nbsp;        affineTransform.concatenate(buildObjectToWorldTransformation(objectParameters));</b>
+<b class="fc"><i>167</i>&nbsp;        return affineTransform;</b>
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    private static AffineTransform buildViewToObjectTransformation(ObjectParameters objectParameters, ViewportParameters viewportParameters)
+<i>171</i>&nbsp;    {
+<i>172</i>&nbsp;        //TODO these might need to be swapped.
+<b class="nc"><i>173</i>&nbsp;        AffineTransform affineTransform = buildWorldToObjectTransformation(objectParameters);</b>
+<b class="nc"><i>174</i>&nbsp;        affineTransform.concatenate(buildViewToWorldTransformation(viewportParameters));</b>
+<b class="nc"><i>175</i>&nbsp;        return affineTransform;</b>
+<i>176</i>&nbsp;    }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    private static AffineTransform buildRotationTransform(double rotation)
+<i>179</i>&nbsp;    {
+<b class="fc"><i>180</i>&nbsp;        return new AffineTransform(Math.cos(rotation), Math.sin(rotation), -Math.sin(rotation), Math.cos(rotation), 0.0, 0.0);</b>
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    private static AffineTransform buildTranslationTransform(double x, double y)
+<i>184</i>&nbsp;    {
+<i>185</i>&nbsp;        //return AffineTransform.getTranslateInstance(x, y);
+<b class="fc"><i>186</i>&nbsp;        return new AffineTransform(1.0, 0.0, 0.0, 1.0, x, y);</b>
+<i>187</i>&nbsp;    }
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    private static AffineTransform buildScalingTransform(double scaling)
+<i>190</i>&nbsp;    {
+<i>191</i>&nbsp;        //return AffineTransform.getScaleInstance(x, y);
+<b class="fc"><i>192</i>&nbsp;        return new AffineTransform(scaling, 0.0, 0.0, scaling, 0.0, 0.0);</b>
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    private static Point2D.Double applyTransformationToPoint(AffineTransform affineTransform, Point2D.Double point)
+<i>196</i>&nbsp;    {
+<b class="fc"><i>197</i>&nbsp;        return (Point2D.Double) affineTransform.transform(point, new Point2D.Double());</b>
+<i>198</i>&nbsp;    }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    public static Vector3D getCullingVectorFromObjectPoint(Point3D point, Matrix cameraMatrix, Matrix objectMatrix)
+<i>201</i>&nbsp;    {
+<b class="fc"><i>202</i>&nbsp;        Matrix pipeline = Matrix.multiply(cameraMatrix, objectMatrix);</b>
+<b class="fc"><i>203</i>&nbsp;        double zoom = 1.0 / Math.tan(Math.PI / 3);</b>
+<b class="fc"><i>204</i>&nbsp;        pipeline = Matrix.multiply(Matrix.clipping(zoom, zoom, 10, 500), pipeline);</b>
+<b class="fc"><i>205</i>&nbsp;        return Matrix.multiply(pipeline, new Vector3D(point));</b>
+<i>206</i>&nbsp;    }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    public static Point2D.Double getScreenSpaceCoordinate(Point2D.Double clippedPoint)
+<i>210</i>&nbsp;    {
+<b class="fc"><i>211</i>&nbsp;        double screenWidth = 512;</b>
+<b class="fc"><i>212</i>&nbsp;        double screenHeight = 512;</b>
+<b class="fc"><i>213</i>&nbsp;        AffineTransform affineTransform = new AffineTransform(screenWidth / 2.0, 0, 0, -screenHeight / 2.0, screenWidth / 2.0, screenHeight / 2.0);</b>
+<b class="fc"><i>214</i>&nbsp;        return applyTransformationToPoint(affineTransform, clippedPoint);</b>
+<i>215</i>&nbsp;    }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    private static boolean isVectorInDrawableArea(Vector3D vector)
+<i>218</i>&nbsp;    {
+<b class="nc"><i>219</i>&nbsp;        double x = vector.getX();</b>
+<b class="nc"><i>220</i>&nbsp;        double y = vector.getY();</b>
+<b class="nc"><i>221</i>&nbsp;        double z = vector.getZ();</b>
+<b class="nc"><i>222</i>&nbsp;        double w = vector.getHomogeneous();</b>
+<b class="nc"><i>223</i>&nbsp;        return ((x &gt; -w) &amp;&amp; (x &lt; w)) &amp;&amp; ((y &gt; -w) &amp;&amp; (y &lt; w)) &amp;&amp; ((z &gt; -w) &amp;&amp; (z &lt; w));</b>
+<i>224</i>&nbsp;    }
+<i>225</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

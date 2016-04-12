@@ -1,0 +1,90 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MouseListener</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.view.drawing.state</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MouseListener (cs355.view.drawing.state)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">MouseListener</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.view.drawing.state;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cs355.model.drawing.CS355Drawing;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.awt.geom.Point2D;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;/**
+<i>8</i>&nbsp; * Created by cstaheli on 2/19/2016.
+<i>9</i>&nbsp; */
+<i>10</i>&nbsp;public interface MouseListener
+<i>11</i>&nbsp;{
+<i>12</i>&nbsp;    /**
+<i>13</i>&nbsp;     * Changes the shape that can be stored in the model after clicking a mouseClicked event.
+<i>14</i>&nbsp;     *
+<i>15</i>&nbsp;     * @param point the point relevant to the event.
+<i>16</i>&nbsp;     * @param model the model to update.
+<i>17</i>&nbsp;     */
+<i>18</i>&nbsp;    void mouseClicked(Point2D.Double point, CS355Drawing model);
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    /**
+<i>21</i>&nbsp;     * Changes the shape that can be stored in the model after clicking a mousePressed event.
+<i>22</i>&nbsp;     *
+<i>23</i>&nbsp;     * @param point the point relevant to the event.
+<i>24</i>&nbsp;     * @param model the model to update.
+<i>25</i>&nbsp;     */
+<i>26</i>&nbsp;    void mousePressed(Point2D.Double point, CS355Drawing model);
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    /**
+<i>29</i>&nbsp;     * Changes the shape that can be stored in the model after clicking a mouseReleased event.
+<i>30</i>&nbsp;     *
+<i>31</i>&nbsp;     * @param point the point relevant to the event.
+<i>32</i>&nbsp;     * @param model the model to update.
+<i>33</i>&nbsp;     */
+<i>34</i>&nbsp;    void mouseReleased(Point2D.Double point, CS355Drawing model);
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    /**
+<i>37</i>&nbsp;     * Changes the shape that can be stored in the model after clicking a mouseDragged event.
+<i>38</i>&nbsp;     *
+<i>39</i>&nbsp;     * @param point the point relevant to the event.
+<i>40</i>&nbsp;     * @param model the model to update.
+<i>41</i>&nbsp;     */
+<i>42</i>&nbsp;    void mouseDragged(Point2D.Double point, CS355Drawing model);
+<i>43</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

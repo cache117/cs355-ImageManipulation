@@ -1,0 +1,218 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: VirtualCamera</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.model.scene</a> ]
+</div>
+
+<h1>Coverage Summary for Class: VirtualCamera (cs355.model.scene)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">VirtualCamera</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.3%
+  </span>
+  <span class="absValue">
+    (9/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    52.5%
+  </span>
+  <span class="absValue">
+    (31/ 59)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.model.scene;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.util.logging.Logger;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import static java.awt.event.KeyEvent.*;
+<i>6</i>&nbsp;import static java.lang.Math.sin;
+<i>7</i>&nbsp;import static java.lang.Math.cos;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;/**
+<i>10</i>&nbsp; * A Virtual Camera for rendering scenes.
+<i>11</i>&nbsp; */
+<i>12</i>&nbsp;public class VirtualCamera
+<i>13</i>&nbsp;{
+<b class="fc"><i>14</i>&nbsp;    private static final Logger LOGGER = Logger.getLogger(VirtualCamera.class.getName());</b>
+<i>15</i>&nbsp;    private static final float UNIT = 1.0f;
+<i>16</i>&nbsp;    private static final float FOVY = 60f, CLIPPING = FOVY / 2.0f;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    private final Point3D cameraLocation;
+<i>19</i>&nbsp;    private double rotation;
+<i>20</i>&nbsp;    private final float movementAmount;
+<i>21</i>&nbsp;    private boolean is3DEnabled;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    public VirtualCamera()
+<b class="fc"><i>24</i>&nbsp;    {</b>
+<b class="fc"><i>25</i>&nbsp;        cameraLocation = new Point3D(0, 0, 0);</b>
+<b class="fc"><i>26</i>&nbsp;        rotation = 0.0f;</b>
+<b class="fc"><i>27</i>&nbsp;        movementAmount = UNIT;</b>
+<b class="fc"><i>28</i>&nbsp;        is3DEnabled = false;</b>
+<b class="fc"><i>29</i>&nbsp;    }</b>
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    /**
+<i>32</i>&nbsp;     * Moves the camera based on the given key press.
+<i>33</i>&nbsp;     * @param key the key that was pressed.
+<i>34</i>&nbsp;     */
+<i>35</i>&nbsp;    public void keyPressed(int key)
+<i>36</i>&nbsp;    {
+<b class="fc"><i>37</i>&nbsp;        switch (key)</b>
+<i>38</i>&nbsp;        {
+<i>39</i>&nbsp;            case VK_W:
+<b class="fc"><i>40</i>&nbsp;                moveForward();</b>
+<b class="fc"><i>41</i>&nbsp;                break;</b>
+<i>42</i>&nbsp;            case VK_A:
+<b class="nc"><i>43</i>&nbsp;                moveLeft();</b>
+<b class="nc"><i>44</i>&nbsp;                break;</b>
+<i>45</i>&nbsp;            case VK_S:
+<b class="nc"><i>46</i>&nbsp;                moveBackward();</b>
+<b class="nc"><i>47</i>&nbsp;                break;</b>
+<i>48</i>&nbsp;            case VK_D:
+<b class="nc"><i>49</i>&nbsp;                moveRight();</b>
+<b class="nc"><i>50</i>&nbsp;                break;</b>
+<i>51</i>&nbsp;            case VK_Q:
+<b class="fc"><i>52</i>&nbsp;                rotateLeft();</b>
+<b class="fc"><i>53</i>&nbsp;                break;</b>
+<i>54</i>&nbsp;            case VK_E:
+<b class="fc"><i>55</i>&nbsp;                rotateRight();</b>
+<b class="fc"><i>56</i>&nbsp;                break;</b>
+<i>57</i>&nbsp;            case VK_R:
+<b class="nc"><i>58</i>&nbsp;                moveUp();</b>
+<b class="nc"><i>59</i>&nbsp;                break;</b>
+<i>60</i>&nbsp;            case VK_F:
+<b class="nc"><i>61</i>&nbsp;                moveDown();</b>
+<b class="nc"><i>62</i>&nbsp;                break;</b>
+<i>63</i>&nbsp;            default:
+<i>64</i>&nbsp;                break;
+<i>65</i>&nbsp;        }
+<b class="fc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    private void moveForward()
+<i>69</i>&nbsp;    {
+<b class="fc"><i>70</i>&nbsp;        LOGGER.fine(&quot;Moving Forward&quot;);</b>
+<b class="fc"><i>71</i>&nbsp;        cameraLocation.x -= movementAmount * sin(rotation);</b>
+<b class="fc"><i>72</i>&nbsp;        cameraLocation.z += movementAmount * cos(rotation);</b>
+<b class="fc"><i>73</i>&nbsp;    }</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    private void moveBackward()
+<i>76</i>&nbsp;    {
+<b class="nc"><i>77</i>&nbsp;        LOGGER.fine(&quot;Moving Backward&quot;);</b>
+<b class="nc"><i>78</i>&nbsp;        cameraLocation.x += movementAmount * sin(rotation);</b>
+<b class="nc"><i>79</i>&nbsp;        cameraLocation.z -= movementAmount * cos(rotation);</b>
+<b class="nc"><i>80</i>&nbsp;    }</b>
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    private void moveLeft()
+<i>83</i>&nbsp;    {
+<b class="nc"><i>84</i>&nbsp;        LOGGER.fine(&quot;Moving Left&quot;);</b>
+<b class="nc"><i>85</i>&nbsp;        cameraLocation.x -= movementAmount * cos(rotation);</b>
+<b class="nc"><i>86</i>&nbsp;        cameraLocation.z -= movementAmount * sin(rotation);</b>
+<b class="nc"><i>87</i>&nbsp;    }</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    private void moveRight()
+<i>90</i>&nbsp;    {
+<b class="nc"><i>91</i>&nbsp;        LOGGER.fine(&quot;Moving Right&quot;);</b>
+<b class="nc"><i>92</i>&nbsp;        cameraLocation.x += movementAmount * cos(rotation);</b>
+<b class="nc"><i>93</i>&nbsp;        cameraLocation.z += movementAmount * sin(rotation);</b>
+<b class="nc"><i>94</i>&nbsp;    }</b>
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    private void moveUp()
+<i>97</i>&nbsp;    {
+<b class="nc"><i>98</i>&nbsp;        LOGGER.fine(&quot;Moving Up&quot;);</b>
+<b class="nc"><i>99</i>&nbsp;        cameraLocation.y += movementAmount;</b>
+<b class="nc"><i>100</i>&nbsp;    }</b>
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    private void moveDown()
+<i>103</i>&nbsp;    {
+<b class="nc"><i>104</i>&nbsp;        LOGGER.fine(&quot;Moving Down&quot;);</b>
+<b class="nc"><i>105</i>&nbsp;        cameraLocation.y -= movementAmount;</b>
+<b class="nc"><i>106</i>&nbsp;    }</b>
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    private void rotateRight()
+<i>109</i>&nbsp;    {
+<b class="fc"><i>110</i>&nbsp;        LOGGER.fine(&quot;Rotating Right&quot;);</b>
+<b class="fc"><i>111</i>&nbsp;        rotation -= (movementAmount / 3.0f);</b>
+<b class="fc"><i>112</i>&nbsp;    }</b>
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    private void rotateLeft()
+<i>115</i>&nbsp;    {
+<b class="fc"><i>116</i>&nbsp;        LOGGER.fine(&quot;Rotating Left&quot;);</b>
+<b class="fc"><i>117</i>&nbsp;        rotation += (movementAmount / 3.0f);</b>
+<b class="fc"><i>118</i>&nbsp;    }</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    public boolean is3DEnabled()
+<i>121</i>&nbsp;    {
+<b class="fc"><i>122</i>&nbsp;        return is3DEnabled;</b>
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    public void toggleCameraMovementEnabled()
+<i>126</i>&nbsp;    {
+<b class="fc"><i>127</i>&nbsp;        is3DEnabled = !is3DEnabled;</b>
+<b class="fc"><i>128</i>&nbsp;    }</b>
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    public void updateScene(CS355Scene scene)
+<i>131</i>&nbsp;    {
+<b class="fc"><i>132</i>&nbsp;        scene.setCameraPosition(cameraLocation);</b>
+<b class="fc"><i>133</i>&nbsp;        scene.setCameraRotation(rotation);</b>
+<b class="fc"><i>134</i>&nbsp;    }</b>
+<i>135</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

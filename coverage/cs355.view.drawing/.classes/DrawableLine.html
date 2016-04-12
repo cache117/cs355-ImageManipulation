@@ -1,0 +1,187 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DrawableLine</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.view.drawing</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DrawableLine (cs355.view.drawing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DrawableLine</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (8/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    78.1%
+  </span>
+  <span class="absValue">
+    (25/ 32)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.view.drawing;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cs355.GUIFunctions;
+<i>4</i>&nbsp;import cs355.model.drawing.Line;
+<i>5</i>&nbsp;import cs355.model.drawing.Shape;
+<i>6</i>&nbsp;import cs355.view.DrawingParameters;
+<i>7</i>&nbsp;import cs355.view.ObjectParameters;
+<i>8</i>&nbsp;import cs355.view.drawing.util.Transform;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import java.awt.*;
+<i>11</i>&nbsp;import java.awt.geom.AffineTransform;
+<i>12</i>&nbsp;import java.awt.geom.Point2D;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;/**
+<i>15</i>&nbsp; * An objects that represents a line. This takes care of all of the drawing and manipulation of lines on the screen.
+<i>16</i>&nbsp; */
+<i>17</i>&nbsp;public class DrawableLine extends DrawableShape
+<i>18</i>&nbsp;{
+<i>19</i>&nbsp;    public DrawableLine(Shape line)
+<i>20</i>&nbsp;    {
+<b class="fc"><i>21</i>&nbsp;        super(line);</b>
+<b class="fc"><i>22</i>&nbsp;    }</b>
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    @Override
+<i>25</i>&nbsp;    public void setStartPoint(Point2D.Double startPoint)
+<i>26</i>&nbsp;    {
+<b class="fc"><i>27</i>&nbsp;        super.setStartPoint(startPoint);</b>
+<b class="fc"><i>28</i>&nbsp;        setCenterPoint(startPoint);</b>
+<b class="fc"><i>29</i>&nbsp;    }</b>
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    public DrawableLine(Color color)
+<i>32</i>&nbsp;    {
+<b class="fc"><i>33</i>&nbsp;        super(color);</b>
+<b class="fc"><i>34</i>&nbsp;        GUIFunctions.printf(&quot;Click and drag from start of line to finish.&quot;);</b>
+<b class="fc"><i>35</i>&nbsp;    }</b>
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    @Override
+<i>38</i>&nbsp;    public double getRotation()
+<i>39</i>&nbsp;    {
+<b class="fc"><i>40</i>&nbsp;        return 0;</b>
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    @Override
+<i>44</i>&nbsp;    public void drawShape(DrawingParameters drawingParameters)
+<i>45</i>&nbsp;    {
+<b class="fc"><i>46</i>&nbsp;        Point2D.Double start = getStartPoint();</b>
+<b class="fc"><i>47</i>&nbsp;        Point2D.Double end = getEndPoint();</b>
+<i>48</i>&nbsp;        //drawingParameters.graphics2D.drawLine((int) start.x, (int) start.y, (int) end.x, (int) end.y);
+<b class="fc"><i>49</i>&nbsp;        Point2D.Double point = Transform.getObjectPointFromWorldPoint(end, new ObjectParameters(start, getRotation()));</b>
+<b class="fc"><i>50</i>&nbsp;        drawingParameters.graphics2D.drawLine(0, 0, (int) point.x, (int) point.y);</b>
+<b class="fc"><i>51</i>&nbsp;    }</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    @Override
+<i>54</i>&nbsp;    protected void calculatePointsFromShape(Shape shape)
+<i>55</i>&nbsp;    {
+<b class="fc"><i>56</i>&nbsp;        Line line = (Line) shape;</b>
+<b class="fc"><i>57</i>&nbsp;        setStartPoint(getCenterPoint());</b>
+<b class="fc"><i>58</i>&nbsp;        setEndPoint(Transform.getWorldPointFromObjectPoint(line.getEnd(), new ObjectParameters(getStartPoint(), getRotation())));</b>
+<i>59</i>&nbsp;        //setEndPoint(line.getEnd());
+<b class="fc"><i>60</i>&nbsp;    }</b>
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    @Override
+<i>63</i>&nbsp;    public Shape getModelShape()
+<i>64</i>&nbsp;    {
+<b class="fc"><i>65</i>&nbsp;        Point2D.Double center = getStartPoint();</b>
+<b class="fc"><i>66</i>&nbsp;        Point2D.Double end = Transform.getObjectPointFromWorldPoint(getEndPoint(), new ObjectParameters(center, getRotation()));</b>
+<i>67</i>&nbsp;        //Point2D.Double end = getEndPoint();
+<b class="fc"><i>68</i>&nbsp;        return new Line(getColor(), center, end);</b>
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    @Override
+<i>72</i>&nbsp;    protected void drawShapeHandle(Graphics2D graphics2D)
+<i>73</i>&nbsp;    {
+<b class="nc"><i>74</i>&nbsp;        super.drawShapeHandle(graphics2D);</b>
+<b class="nc"><i>75</i>&nbsp;        Point2D.Double endHandle = getEndHandleCenterPoint();</b>
+<b class="nc"><i>76</i>&nbsp;        graphics2D.drawOval((int) endHandle.x, (int) endHandle.y, HANDLE_DIAMETER, HANDLE_DIAMETER);</b>
+<b class="nc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    @Override
+<i>80</i>&nbsp;    public void drawShapeOutline(DrawingParameters drawingParameters)
+<i>81</i>&nbsp;    {
+<i>82</i>&nbsp;
+<b class="nc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    @Override
+<i>86</i>&nbsp;    protected void applyTransformationToGraphics(DrawingParameters drawingParameters)
+<i>87</i>&nbsp;    {
+<b class="fc"><i>88</i>&nbsp;        AffineTransform affineTransform = new AffineTransform();</b>
+<b class="fc"><i>89</i>&nbsp;        drawingParameters.graphics2D.setTransform(affineTransform);</b>
+<b class="fc"><i>90</i>&nbsp;        Transform.applyTransformationToGraphics(drawingParameters, new ObjectParameters(getCenterPoint(), getRotation()));</b>
+<b class="fc"><i>91</i>&nbsp;    }</b>
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    @Override
+<i>94</i>&nbsp;    public Point2D.Double getHandleCenterPoint()
+<i>95</i>&nbsp;    {
+<b class="nc"><i>96</i>&nbsp;        return new Point2D.Double(0, 0);</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    private Point2D.Double getEndHandleCenterPoint()
+<i>100</i>&nbsp;    {
+<b class="nc"><i>101</i>&nbsp;        return Transform.getObjectPointFromWorldPoint(getEndPoint(), new ObjectParameters(getCenterPoint(), getRotation()));</b>
+<i>102</i>&nbsp;        //return getEndPoint();
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

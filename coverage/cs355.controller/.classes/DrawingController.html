@@ -1,0 +1,448 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DrawingController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.controller</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DrawingController (cs355.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DrawingController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96%
+  </span>
+  <span class="absValue">
+    (48/ 50)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95.9%
+  </span>
+  <span class="absValue">
+    (118/ 123)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.controller;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cs355.GUIFunctions;
+<i>4</i>&nbsp;import cs355.model.drawing.*;
+<i>5</i>&nbsp;import cs355.model.image.CS355Image;
+<i>6</i>&nbsp;import cs355.model.image.DrawingImage;
+<i>7</i>&nbsp;import cs355.model.scene.CS355Scene;
+<i>8</i>&nbsp;import cs355.view.DrawingViewer;
+<i>9</i>&nbsp;import cs355.view.ViewRefresher;
+<i>10</i>&nbsp;import cs355.view.ViewportParameters;
+<i>11</i>&nbsp;import cs355.view.drawing.state.DrawingState;
+<i>12</i>&nbsp;import cs355.view.drawing.state.InitialState;
+<i>13</i>&nbsp;import cs355.view.drawing.util.Transform;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;import java.awt.*;
+<i>16</i>&nbsp;import java.awt.event.MouseEvent;
+<i>17</i>&nbsp;import java.awt.event.MouseListener;
+<i>18</i>&nbsp;import java.awt.event.MouseMotionListener;
+<i>19</i>&nbsp;import java.awt.geom.Point2D;
+<i>20</i>&nbsp;import java.io.File;
+<i>21</i>&nbsp;import java.util.*;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;/**
+<i>24</i>&nbsp; * A Cront
+<i>25</i>&nbsp; */
+<i>26</i>&nbsp;public class DrawingController implements CS355Controller, MouseListener, MouseMotionListener
+<i>27</i>&nbsp;{
+<i>28</i>&nbsp;    private ViewRefresher view;
+<i>29</i>&nbsp;    private DrawingState state;
+<i>30</i>&nbsp;    private final CS355Drawing model;
+<i>31</i>&nbsp;    private final CS355Scene scene;
+<i>32</i>&nbsp;    private final CS355Image image;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    public DrawingController()
+<b class="fc"><i>35</i>&nbsp;    {</b>
+<b class="fc"><i>36</i>&nbsp;        model = new DrawingModel();</b>
+<b class="fc"><i>37</i>&nbsp;        state = new InitialState();</b>
+<b class="fc"><i>38</i>&nbsp;        state.setColor(Color.WHITE, model);</b>
+<b class="fc"><i>39</i>&nbsp;        scene = new CS355Scene();</b>
+<b class="fc"><i>40</i>&nbsp;        image = new DrawingImage();</b>
+<b class="fc"><i>41</i>&nbsp;    }</b>
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    private void setupData()
+<i>44</i>&nbsp;    {
+<b class="fc"><i>45</i>&nbsp;        openImage(new File(&quot;./images/SLC.jpg&quot;));</b>
+<b class="fc"><i>46</i>&nbsp;        openScene(new File(&quot;./scenes/Street.scn&quot;));</b>
+<b class="fc"><i>47</i>&nbsp;    }</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    /* begin CS355Controller methods */
+<i>50</i>&nbsp;    @Override
+<i>51</i>&nbsp;    public void colorButtonHit(Color c)
+<i>52</i>&nbsp;    {
+<b class="fc"><i>53</i>&nbsp;        GUIFunctions.changeSelectedColor(c);</b>
+<b class="fc"><i>54</i>&nbsp;        state.setColor(c, model);</b>
+<b class="fc"><i>55</i>&nbsp;    }</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    @Override
+<i>58</i>&nbsp;    public void lineButtonHit()
+<i>59</i>&nbsp;    {
+<b class="fc"><i>60</i>&nbsp;        state.lineButtonHit(this);</b>
+<b class="fc"><i>61</i>&nbsp;    }</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    @Override
+<i>64</i>&nbsp;    public void squareButtonHit()
+<i>65</i>&nbsp;    {
+<b class="fc"><i>66</i>&nbsp;        state.squareButtonHit(this);</b>
+<b class="fc"><i>67</i>&nbsp;    }</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    @Override
+<i>70</i>&nbsp;    public void rectangleButtonHit()
+<i>71</i>&nbsp;    {
+<b class="fc"><i>72</i>&nbsp;        state.rectangleButtonHit(this);</b>
+<b class="fc"><i>73</i>&nbsp;    }</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    @Override
+<i>76</i>&nbsp;    public void circleButtonHit()
+<i>77</i>&nbsp;    {
+<b class="fc"><i>78</i>&nbsp;        state.circleButtonHit(this);</b>
+<b class="fc"><i>79</i>&nbsp;    }</b>
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    @Override
+<i>82</i>&nbsp;    public void ellipseButtonHit()
+<i>83</i>&nbsp;    {
+<b class="fc"><i>84</i>&nbsp;        state.ellipseButtonHit(this);</b>
+<b class="fc"><i>85</i>&nbsp;    }</b>
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    @Override
+<i>88</i>&nbsp;    public void triangleButtonHit()
+<i>89</i>&nbsp;    {
+<b class="fc"><i>90</i>&nbsp;        state.triangleButtonHit(this);</b>
+<b class="fc"><i>91</i>&nbsp;    }</b>
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    @Override
+<i>94</i>&nbsp;    public void selectButtonHit()
+<i>95</i>&nbsp;    {
+<b class="fc"><i>96</i>&nbsp;        state.selectButtonHit(this);</b>
+<b class="fc"><i>97</i>&nbsp;    }</b>
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    @Override
+<i>100</i>&nbsp;    public void zoomInButtonHit()
+<i>101</i>&nbsp;    {
+<b class="fc"><i>102</i>&nbsp;        ((DrawingViewer) view).zoomInButtonHit();</b>
+<b class="fc"><i>103</i>&nbsp;    }</b>
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    @Override
+<i>106</i>&nbsp;    public void zoomOutButtonHit()
+<i>107</i>&nbsp;    {
+<b class="fc"><i>108</i>&nbsp;        ((DrawingViewer) view).zoomOutButtonHit();</b>
+<b class="fc"><i>109</i>&nbsp;    }</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    @Override
+<i>112</i>&nbsp;    public void hScrollbarChanged(int value)
+<i>113</i>&nbsp;    {
+<b class="fc"><i>114</i>&nbsp;        ((DrawingViewer) view).hScrollbarChanged(value);</b>
+<b class="fc"><i>115</i>&nbsp;    }</b>
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    @Override
+<i>118</i>&nbsp;    public void vScrollbarChanged(int value)
+<i>119</i>&nbsp;    {
+<b class="fc"><i>120</i>&nbsp;        ((DrawingViewer) view).vScrollbarChanged(value);</b>
+<b class="fc"><i>121</i>&nbsp;    }</b>
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    @Override
+<i>124</i>&nbsp;    public void openScene(File file)
+<i>125</i>&nbsp;    {
+<b class="fc"><i>126</i>&nbsp;        if (scene.open(file))</b>
+<b class="fc"><i>127</i>&nbsp;            GUIFunctions.refresh();</b>
+<i>128</i>&nbsp;        else
+<b class="nc"><i>129</i>&nbsp;            GUIFunctions.printf(&quot;Opening Scene failed&quot;);</b>
+<b class="fc"><i>130</i>&nbsp;    }</b>
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    @Override
+<i>133</i>&nbsp;    public void toggle3DModelDisplay()
+<i>134</i>&nbsp;    {
+<b class="fc"><i>135</i>&nbsp;        ((DrawingViewer) view).toggle3DModelDisplay();</b>
+<b class="fc"><i>136</i>&nbsp;        GUIFunctions.refresh();</b>
+<b class="fc"><i>137</i>&nbsp;        this.setupData();</b>
+<b class="fc"><i>138</i>&nbsp;    }</b>
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    @Override
+<i>141</i>&nbsp;    public void keyPressed(Iterator&lt;Integer&gt; iterator)
+<i>142</i>&nbsp;    {
+<b class="fc"><i>143</i>&nbsp;        ((DrawingViewer) view).keyPressed(iterator);</b>
+<b class="fc"><i>144</i>&nbsp;    }</b>
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    @Override
+<i>147</i>&nbsp;    public void openImage(File file)
+<i>148</i>&nbsp;    {
+<b class="fc"><i>149</i>&nbsp;        image.open(file);</b>
+<b class="fc"><i>150</i>&nbsp;    }</b>
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    @Override
+<i>153</i>&nbsp;    public void saveImage(File file)
+<i>154</i>&nbsp;    {
+<b class="fc"><i>155</i>&nbsp;        image.save(file);</b>
+<b class="fc"><i>156</i>&nbsp;    }</b>
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;    @Override
+<i>159</i>&nbsp;    public void toggleBackgroundDisplay()
+<i>160</i>&nbsp;    {
+<b class="fc"><i>161</i>&nbsp;        ((DrawingImage)image).toggleBackgroundDisplay();</b>
+<b class="fc"><i>162</i>&nbsp;    }</b>
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    @Override
+<i>165</i>&nbsp;    public void saveDrawing(File file)
+<i>166</i>&nbsp;    {
+<b class="nc"><i>167</i>&nbsp;        model.save(file);</b>
+<b class="nc"><i>168</i>&nbsp;    }</b>
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    @Override
+<i>171</i>&nbsp;    public void openDrawing(File file)
+<i>172</i>&nbsp;    {
+<b class="nc"><i>173</i>&nbsp;        model.open(file);</b>
+<b class="nc"><i>174</i>&nbsp;    }</b>
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;    @Override
+<i>177</i>&nbsp;    public void doDeleteShape()
+<i>178</i>&nbsp;    {
+<b class="fc"><i>179</i>&nbsp;        state.deleteShape(getModel());</b>
+<b class="fc"><i>180</i>&nbsp;    }</b>
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;    @Override
+<i>183</i>&nbsp;    public void doEdgeDetection()
+<i>184</i>&nbsp;    {
+<b class="fc"><i>185</i>&nbsp;        image.edgeDetection();</b>
+<b class="fc"><i>186</i>&nbsp;    }</b>
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    @Override
+<i>189</i>&nbsp;    public void doSharpen()
+<i>190</i>&nbsp;    {
+<b class="fc"><i>191</i>&nbsp;        image.sharpen();</b>
+<b class="fc"><i>192</i>&nbsp;    }</b>
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    @Override
+<i>195</i>&nbsp;    public void doMedianBlur()
+<i>196</i>&nbsp;    {
+<b class="fc"><i>197</i>&nbsp;        image.medianBlur();</b>
+<b class="fc"><i>198</i>&nbsp;    }</b>
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    @Override
+<i>201</i>&nbsp;    public void doUniformBlur()
+<i>202</i>&nbsp;    {
+<b class="fc"><i>203</i>&nbsp;        image.uniformBlur();</b>
+<b class="fc"><i>204</i>&nbsp;    }</b>
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    @Override
+<i>207</i>&nbsp;    public void doGrayscale()
+<i>208</i>&nbsp;    {
+<b class="fc"><i>209</i>&nbsp;        image.grayscale();</b>
+<b class="fc"><i>210</i>&nbsp;    }</b>
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;    @Override
+<i>213</i>&nbsp;    public void doChangeContrast(int contrastAmountNum)
+<i>214</i>&nbsp;    {
+<b class="fc"><i>215</i>&nbsp;        image.contrast(contrastAmountNum);</b>
+<b class="fc"><i>216</i>&nbsp;    }</b>
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;    @Override
+<i>219</i>&nbsp;    public void doChangeBrightness(int brightnessAmountNum)
+<i>220</i>&nbsp;    {
+<b class="fc"><i>221</i>&nbsp;        image.brightness(brightnessAmountNum);</b>
+<b class="fc"><i>222</i>&nbsp;    }</b>
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;    @Override
+<i>225</i>&nbsp;    public void doMoveForward()
+<i>226</i>&nbsp;    {
+<b class="fc"><i>227</i>&nbsp;        state.moveShapeForward(getModel());</b>
+<b class="fc"><i>228</i>&nbsp;    }</b>
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;    @Override
+<i>231</i>&nbsp;    public void doMoveBackward()
+<i>232</i>&nbsp;    {
+<b class="fc"><i>233</i>&nbsp;        state.moveShapeBackward(model);</b>
+<b class="fc"><i>234</i>&nbsp;    }</b>
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    @Override
+<i>237</i>&nbsp;    public void doSendToFront()
+<i>238</i>&nbsp;    {
+<b class="fc"><i>239</i>&nbsp;        state.moveShapeToFront(model);</b>
+<b class="fc"><i>240</i>&nbsp;    }</b>
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    @Override
+<i>243</i>&nbsp;    public void doSendtoBack()
+<i>244</i>&nbsp;    {
+<b class="fc"><i>245</i>&nbsp;        state.moveShapeToBack(model);</b>
+<b class="fc"><i>246</i>&nbsp;    }</b>
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    /* end CS355Controller methods */
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;    /* begin MouseListener methods */
+<i>251</i>&nbsp;    @Override
+<i>252</i>&nbsp;    public void mouseClicked(MouseEvent e)
+<i>253</i>&nbsp;    {
+<b class="fc"><i>254</i>&nbsp;        Point2D.Double viewPoint = new Point2D.Double(e.getX(), e.getY());</b>
+<b class="fc"><i>255</i>&nbsp;        Point2D.Double worldPoint = getWorldPointFromViewPoint(viewPoint);</b>
+<b class="fc"><i>256</i>&nbsp;        printRelativePoints(&quot;Mouse Clicked: W:(%d,%d), V:(%d,%d)&quot;, worldPoint, viewPoint);</b>
+<b class="fc"><i>257</i>&nbsp;        state.mouseClicked(worldPoint, model);</b>
+<b class="fc"><i>258</i>&nbsp;    }</b>
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;    @Override
+<i>261</i>&nbsp;    public void mousePressed(MouseEvent e)
+<i>262</i>&nbsp;    {
+<b class="fc"><i>263</i>&nbsp;        Point2D.Double viewPoint = new Point2D.Double(e.getX(), e.getY());</b>
+<b class="fc"><i>264</i>&nbsp;        Point2D.Double worldPoint = getWorldPointFromViewPoint(viewPoint);</b>
+<b class="fc"><i>265</i>&nbsp;        printRelativePoints(&quot;Mouse Pressed: W:(%d,%d), V:(%d,%d)&quot;, worldPoint, viewPoint);</b>
+<b class="fc"><i>266</i>&nbsp;        state.mousePressed(worldPoint, model);</b>
+<b class="fc"><i>267</i>&nbsp;    }</b>
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;    @Override
+<i>270</i>&nbsp;    public void mouseReleased(MouseEvent e)
+<i>271</i>&nbsp;    {
+<b class="fc"><i>272</i>&nbsp;        Point2D.Double viewPoint = new Point2D.Double(e.getX(), e.getY());</b>
+<b class="fc"><i>273</i>&nbsp;        Point2D.Double worldPoint = getWorldPointFromViewPoint(viewPoint);</b>
+<b class="fc"><i>274</i>&nbsp;        printRelativePoints(&quot;Mouse Released: W:(%d,%d), V:(%d,%d)&quot;, worldPoint, viewPoint);</b>
+<b class="fc"><i>275</i>&nbsp;        state.mouseReleased(worldPoint, model);</b>
+<b class="fc"><i>276</i>&nbsp;    }</b>
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    @Override
+<i>279</i>&nbsp;    public void mouseEntered(MouseEvent e)
+<i>280</i>&nbsp;    {
+<b class="fc"><i>281</i>&nbsp;        Point2D.Double viewPoint = new Point2D.Double(e.getX(), e.getY());</b>
+<i>282</i>&nbsp;        //GUIFunctions.printf(&quot;Mouse Entered: %s&quot;, viewPoint.toString());
+<b class="fc"><i>283</i>&nbsp;    }</b>
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    @Override
+<i>286</i>&nbsp;    public void mouseExited(MouseEvent e)
+<i>287</i>&nbsp;    {
+<b class="fc"><i>288</i>&nbsp;        Point2D.Double viewPoint = new Point2D.Double(e.getX(), e.getY());</b>
+<i>289</i>&nbsp;        //GUIFunctions.printf(&quot;Mouse Exited: %s&quot;, viewPoint.toString());
+<b class="fc"><i>290</i>&nbsp;    }</b>
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    /* end MouseListener methods */
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    /* begin MouseMotionListener methods */
+<i>295</i>&nbsp;    @Override
+<i>296</i>&nbsp;    public void mouseDragged(MouseEvent e)
+<i>297</i>&nbsp;    {
+<b class="fc"><i>298</i>&nbsp;        Point2D.Double viewPoint = new Point2D.Double(e.getX(), e.getY());</b>
+<b class="fc"><i>299</i>&nbsp;        Point2D.Double worldPoint = getWorldPointFromViewPoint(viewPoint);</b>
+<b class="fc"><i>300</i>&nbsp;        printRelativePoints(&quot;Mouse Dragged: W:(%d,%d), V:(%d,%d)&quot;, worldPoint, viewPoint);</b>
+<b class="fc"><i>301</i>&nbsp;        state.mouseDragged(worldPoint, model);</b>
+<b class="fc"><i>302</i>&nbsp;    }</b>
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;    @Override
+<i>305</i>&nbsp;    public void mouseMoved(MouseEvent e)
+<i>306</i>&nbsp;    {
+<b class="fc"><i>307</i>&nbsp;        Point2D.Double viewPoint = new Point2D.Double(e.getX(), e.getY());</b>
+<i>308</i>&nbsp;        //GUIFunctions.printf(&quot;Mouse Moved: %s&quot;, viewPoint.toString());
+<b class="fc"><i>309</i>&nbsp;    }</b>
+<i>310</i>&nbsp;    /* end MouseMotionListener methods */
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    public void setView(ViewRefresher view)
+<i>313</i>&nbsp;    {
+<b class="fc"><i>314</i>&nbsp;        this.view = view;</b>
+<i>315</i>&nbsp;
+<b class="fc"><i>316</i>&nbsp;        this.model.deleteObservers();</b>
+<b class="fc"><i>317</i>&nbsp;        this.model.addObserver(view);</b>
+<i>318</i>&nbsp;
+<b class="fc"><i>319</i>&nbsp;        this.scene.deleteObservers();</b>
+<b class="fc"><i>320</i>&nbsp;        this.scene.addObserver(view);</b>
+<i>321</i>&nbsp;
+<b class="fc"><i>322</i>&nbsp;        this.image.deleteObservers();</b>
+<b class="fc"><i>323</i>&nbsp;        this.image.addObserver(view);</b>
+<b class="fc"><i>324</i>&nbsp;    }</b>
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;    public ViewRefresher getView()
+<i>327</i>&nbsp;    {
+<b class="fc"><i>328</i>&nbsp;        return view;</b>
+<i>329</i>&nbsp;    }
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;    public CS355Drawing getModel()
+<i>332</i>&nbsp;    {
+<b class="fc"><i>333</i>&nbsp;        return model;</b>
+<i>334</i>&nbsp;    }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;    public void setState(DrawingState state)
+<i>337</i>&nbsp;    {
+<b class="fc"><i>338</i>&nbsp;        this.state = state;</b>
+<b class="fc"><i>339</i>&nbsp;    }</b>
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;    private double getScalingFactor()
+<i>342</i>&nbsp;    {
+<b class="fc"><i>343</i>&nbsp;        return ((DrawingViewer) view).getScalingFactor();</b>
+<i>344</i>&nbsp;    }
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;    private Point2D.Double getViewportUpperLeft()
+<i>347</i>&nbsp;    {
+<b class="fc"><i>348</i>&nbsp;        return ((DrawingViewer) view).getViewportUpperLeft();</b>
+<i>349</i>&nbsp;    }
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    private void printRelativePoints(String message, Point2D.Double worldPoint, Point2D.Double viewPoint)
+<i>352</i>&nbsp;    {
+<b class="fc"><i>353</i>&nbsp;        GUIFunctions.printf(message, (int) worldPoint.x, (int) worldPoint.y, (int) viewPoint.x, (int) viewPoint.y);</b>
+<b class="fc"><i>354</i>&nbsp;    }</b>
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;    private Point2D.Double getWorldPointFromViewPoint(Point2D.Double viewPoint)
+<i>357</i>&nbsp;    {
+<b class="fc"><i>358</i>&nbsp;        return Transform.getWorldPointFromViewPoint(viewPoint, new ViewportParameters(getViewportUpperLeft(), getScalingFactor()));</b>
+<i>359</i>&nbsp;    }
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;    public CS355Scene getScene()
+<i>362</i>&nbsp;    {
+<b class="fc"><i>363</i>&nbsp;        return scene;</b>
+<i>364</i>&nbsp;    }
+<i>365</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

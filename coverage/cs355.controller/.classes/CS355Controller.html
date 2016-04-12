@@ -1,0 +1,255 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CS355Controller</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.controller</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CS355Controller (cs355.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">CS355Controller</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.controller;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.awt.Color;
+<i>4</i>&nbsp;import java.awt.event.MouseListener;
+<i>5</i>&nbsp;import java.awt.event.MouseMotionListener;
+<i>6</i>&nbsp;import java.io.File;
+<i>7</i>&nbsp;import java.util.Iterator;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;public interface CS355Controller extends MouseListener, MouseMotionListener {
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;	// Color.
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;	/**
+<i>14</i>&nbsp;	 * Called when the user hits the color button.
+<i>15</i>&nbsp;	 * @param c = the new &lt;i&gt;drawing&lt;/i&gt; color.
+<i>16</i>&nbsp;	 */
+<i>17</i>&nbsp;	public void colorButtonHit(Color c);
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;	// Shapes.
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;	/**
+<i>22</i>&nbsp;	 * Called when the user hits the line button.
+<i>23</i>&nbsp;	 */
+<i>24</i>&nbsp;	public void lineButtonHit();
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;	/**
+<i>27</i>&nbsp;	 * Called when the user hits the square button.
+<i>28</i>&nbsp;	 */
+<i>29</i>&nbsp;	public void squareButtonHit();
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;	/**
+<i>32</i>&nbsp;	 * Called when the user hits the rectangle button.
+<i>33</i>&nbsp;	 */
+<i>34</i>&nbsp;	public void rectangleButtonHit();
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;	/**
+<i>37</i>&nbsp;	 * Called when the user hits the circle button.
+<i>38</i>&nbsp;	 */
+<i>39</i>&nbsp;	public void circleButtonHit();
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;	/**
+<i>42</i>&nbsp;	 * Called when the user hits the ellipse button.
+<i>43</i>&nbsp;	 */
+<i>44</i>&nbsp;	public void ellipseButtonHit();
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;	/**
+<i>47</i>&nbsp;	 * Called when the user hits the triangle button.
+<i>48</i>&nbsp;	 */
+<i>49</i>&nbsp;	public void triangleButtonHit();
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;	/**
+<i>52</i>&nbsp;	 * Called when the user hits the select button.
+<i>53</i>&nbsp;	 */
+<i>54</i>&nbsp;	public void selectButtonHit();
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;	// Zooming.
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;	/**
+<i>59</i>&nbsp;	 * Called when the user hits the zoom in button.
+<i>60</i>&nbsp;	 */
+<i>61</i>&nbsp;	public void zoomInButtonHit();
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;	/**
+<i>64</i>&nbsp;	 * Called when the user hits the zoom out button.
+<i>65</i>&nbsp;	 */
+<i>66</i>&nbsp;	public void zoomOutButtonHit();
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;	/**
+<i>69</i>&nbsp;	 * Called when the horizontal scrollbar position changes.
+<i>70</i>&nbsp;	 * @param value = the new position.
+<i>71</i>&nbsp;	 */
+<i>72</i>&nbsp;	public void hScrollbarChanged(int value);
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;	/**
+<i>75</i>&nbsp;	 * Called when the vertical scrollbar position changes.
+<i>76</i>&nbsp;	 * @param value = the new position.
+<i>77</i>&nbsp;	 */
+<i>78</i>&nbsp;	public void vScrollbarChanged(int value);
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;	// 3D Model.
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;	/**
+<i>83</i>&nbsp;	 * Called to load a scene from a file.
+<i>84</i>&nbsp;	 * @param file = the file containing the scene to load.
+<i>85</i>&nbsp;	 */
+<i>86</i>&nbsp;	public void openScene(File file);
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;	/**
+<i>89</i>&nbsp;	 * Called to toggle the 3D OpenGL display.
+<i>90</i>&nbsp;	 */
+<i>91</i>&nbsp;	public void toggle3DModelDisplay();
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;	/**
+<i>94</i>&nbsp;	 * Called when the user presses keys. This is used
+<i>95</i>&nbsp;	 * for navigating in the 3D world.
+<i>96</i>&nbsp;	 * @param iterator = the iterator over the keys.
+<i>97</i>&nbsp;	 */
+<i>98</i>&nbsp;	public void keyPressed(Iterator&lt;Integer&gt; iterator);
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;	// Image.
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;	/**
+<i>103</i>&nbsp;	 * Called to load a background image.
+<i>104</i>&nbsp;	 * @param file = the image file to load.
+<i>105</i>&nbsp;	 */
+<i>106</i>&nbsp;	public void openImage(File file);
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;	/**
+<i>109</i>&nbsp;	 * Called to save the background image.
+<i>110</i>&nbsp;	 * @param file = the file to save the image to.
+<i>111</i>&nbsp;	 */
+<i>112</i>&nbsp;	public void saveImage(File file);
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;	/**
+<i>115</i>&nbsp;	 * Called to toggle the background image display.
+<i>116</i>&nbsp;	 */
+<i>117</i>&nbsp;	public void toggleBackgroundDisplay();
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;	// File menu.
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;	/**
+<i>122</i>&nbsp;	 * Called to save a drawing.
+<i>123</i>&nbsp;	 * @param file = the file to save the drawing to.
+<i>124</i>&nbsp;	 */
+<i>125</i>&nbsp;	public void saveDrawing(File file);
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;	/**
+<i>128</i>&nbsp;	 * Called to open a drawing.
+<i>129</i>&nbsp;	 * @param file = the file to open the drawing from.
+<i>130</i>&nbsp;	 */
+<i>131</i>&nbsp;	public void openDrawing(File file);
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;	// Edit menu.
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;	/**
+<i>136</i>&nbsp;	 * Called to delete the currently selected shape.
+<i>137</i>&nbsp;	 */
+<i>138</i>&nbsp;	public void doDeleteShape();
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;	// Image menu.
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;	/**
+<i>143</i>&nbsp;	 * Called to perform edge detection
+<i>144</i>&nbsp;	 * on the background image.
+<i>145</i>&nbsp;	 */
+<i>146</i>&nbsp;	public void doEdgeDetection();
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;	/**
+<i>149</i>&nbsp;	 * Called to perform sharpen
+<i>150</i>&nbsp;	 * on the background image.
+<i>151</i>&nbsp;	 */
+<i>152</i>&nbsp;	public void doSharpen();
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;	/**
+<i>155</i>&nbsp;	 * Called to perform median blur
+<i>156</i>&nbsp;	 * on the background image.
+<i>157</i>&nbsp;	 */
+<i>158</i>&nbsp;	public void doMedianBlur();
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;	/**
+<i>161</i>&nbsp;	 * Called to perform uniform blur
+<i>162</i>&nbsp;	 * on the background image.
+<i>163</i>&nbsp;	 */
+<i>164</i>&nbsp;	public void doUniformBlur();
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;	/**
+<i>167</i>&nbsp;	 * Called to change the background image to grayscale.
+<i>168</i>&nbsp;	 */
+<i>169</i>&nbsp;	public void doGrayscale();
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;	/**
+<i>172</i>&nbsp;	 * Called to change the contrast on the background image.
+<i>173</i>&nbsp;	 * @param contrastAmountNum = how much contrast to add.
+<i>174</i>&nbsp;	 */
+<i>175</i>&nbsp;	public void doChangeContrast(int contrastAmountNum);
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;	/**
+<i>178</i>&nbsp;	 * Called to change the brightness on the background image.
+<i>179</i>&nbsp;	 * @param brightnessAmountNum = how much brightness to add.
+<i>180</i>&nbsp;	 */
+<i>181</i>&nbsp;	public void doChangeBrightness(int brightnessAmountNum);
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;	// Object menu.
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;	/**
+<i>186</i>&nbsp;	 * Called to move the currently selected
+<i>187</i>&nbsp;	 * shape one slot forward.
+<i>188</i>&nbsp;	 */
+<i>189</i>&nbsp;	public void doMoveForward();
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;	/**
+<i>192</i>&nbsp;	 * Called to move the currently selected
+<i>193</i>&nbsp;	 * shape one slot backward.
+<i>194</i>&nbsp;	 */
+<i>195</i>&nbsp;	public void doMoveBackward();
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;	/**
+<i>198</i>&nbsp;	 * Called to move the currently
+<i>199</i>&nbsp;	 * selected shape to the front.
+<i>200</i>&nbsp;	 */
+<i>201</i>&nbsp;	public void doSendToFront();
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;	/**
+<i>204</i>&nbsp;	 * Called to move the currently
+<i>205</i>&nbsp;	 * selected shape to the back.
+<i>206</i>&nbsp;	 */
+<i>207</i>&nbsp;	public void doSendtoBack();
+<i>208</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

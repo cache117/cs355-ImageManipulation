@@ -1,0 +1,249 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Vector2D</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.view.drawing.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Vector2D (cs355.view.drawing.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Vector2D</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    78.6%
+  </span>
+  <span class="absValue">
+    (11/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    65.9%
+  </span>
+  <span class="absValue">
+    (27/ 41)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.view.drawing.util;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.awt.geom.Point2D;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;/**
+<i>6</i>&nbsp; * Represents a linear algebra vector with two or three entries.
+<i>7</i>&nbsp; */
+<i>8</i>&nbsp;public class Vector2D
+<i>9</i>&nbsp;{
+<i>10</i>&nbsp;    private final double x, y;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;    private Vector2D(double x, double y)
+<b class="fc"><i>13</i>&nbsp;    {</b>
+<b class="fc"><i>14</i>&nbsp;        this.x = x;</b>
+<b class="fc"><i>15</i>&nbsp;        this.y = y;</b>
+<b class="fc"><i>16</i>&nbsp;    }</b>
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    /**
+<i>19</i>&nbsp;     * Initializes a Vector2D from a 2D point.
+<i>20</i>&nbsp;     *
+<i>21</i>&nbsp;     * @param point the point to represent as a Vector2D.
+<i>22</i>&nbsp;     */
+<i>23</i>&nbsp;    public Vector2D(Point2D.Double point)
+<i>24</i>&nbsp;    {
+<b class="fc"><i>25</i>&nbsp;        this(point.x, point.y);</b>
+<b class="fc"><i>26</i>&nbsp;    }</b>
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    /**
+<i>29</i>&nbsp;     * Calculates the dot-product of this Vector2D with the given Vector2D.
+<i>30</i>&nbsp;     *
+<i>31</i>&nbsp;     * @param vector the Vector2D to calculate the dot-product with.
+<i>32</i>&nbsp;     * @return the result of the dot-product operation.
+<i>33</i>&nbsp;     */
+<i>34</i>&nbsp;    public double dotProduct(Vector2D vector)
+<i>35</i>&nbsp;    {
+<b class="fc"><i>36</i>&nbsp;        return (this.x * vector.x) + (this.y * vector.y);</b>
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    /**
+<i>40</i>&nbsp;     * Subtracts the given Vector2D from this Vector2D
+<i>41</i>&nbsp;     *
+<i>42</i>&nbsp;     * @param vector the Vector2D to subtract
+<i>43</i>&nbsp;     * @return the result of the subtraction operation.
+<i>44</i>&nbsp;     */
+<i>45</i>&nbsp;    public Vector2D subtract(Vector2D vector)
+<i>46</i>&nbsp;    {
+<b class="fc"><i>47</i>&nbsp;        double x = this.x - vector.x;</b>
+<b class="fc"><i>48</i>&nbsp;        double y = this.y - vector.y;</b>
+<b class="fc"><i>49</i>&nbsp;        return new Vector2D(x, y);</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    /**
+<i>53</i>&nbsp;     * Adds the given Vector2D to this Vector2D.
+<i>54</i>&nbsp;     *
+<i>55</i>&nbsp;     * @param vector the Vector2D to add.
+<i>56</i>&nbsp;     * @return the result of the addition operation.
+<i>57</i>&nbsp;     */
+<i>58</i>&nbsp;    public Vector2D add(Vector2D vector)
+<i>59</i>&nbsp;    {
+<b class="fc"><i>60</i>&nbsp;        double x = this.x + vector.x;</b>
+<b class="fc"><i>61</i>&nbsp;        double y = this.y + vector.y;</b>
+<b class="fc"><i>62</i>&nbsp;        return new Vector2D(x, y);</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    /**
+<i>66</i>&nbsp;     * Returns a Vector2D that represents the orthogonal version of this Vector2D.
+<i>67</i>&nbsp;     *
+<i>68</i>&nbsp;     * @return the orthogonal version of this Vector2D.
+<i>69</i>&nbsp;     */
+<i>70</i>&nbsp;    @SuppressWarnings(&quot;SuspiciousNameCombination&quot;)
+<i>71</i>&nbsp;    public Vector2D orthogonalize()
+<i>72</i>&nbsp;    {
+<b class="fc"><i>73</i>&nbsp;        double x = -y;</b>
+<b class="fc"><i>74</i>&nbsp;        double y = this.x;</b>
+<b class="fc"><i>75</i>&nbsp;        return new Vector2D(x, y);</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    /**
+<i>79</i>&nbsp;     * Gets the length of the vector from the origin. This is equivalent to calling length(new Vector2D(0, 0);
+<i>80</i>&nbsp;     *
+<i>81</i>&nbsp;     * @return the length of the vector from the origin.
+<i>82</i>&nbsp;     */
+<i>83</i>&nbsp;    public double length()
+<i>84</i>&nbsp;    {
+<b class="fc"><i>85</i>&nbsp;        return length(new Vector2D(0, 0));</b>
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    /**
+<i>89</i>&nbsp;     * The length or distance of the Vector2D from the given vector.
+<i>90</i>&nbsp;     *
+<i>91</i>&nbsp;     * @param start the other vector.
+<i>92</i>&nbsp;     * @return the length or distance between two vectors.
+<i>93</i>&nbsp;     */
+<i>94</i>&nbsp;    public double length(Vector2D start)
+<i>95</i>&nbsp;    {
+<b class="fc"><i>96</i>&nbsp;        return Math.sqrt(square(this.x - start.x) + square(this.y - start.y));</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    /**
+<i>100</i>&nbsp;     * Calculates the normal of two Vectors.
+<i>101</i>&nbsp;     *
+<i>102</i>&nbsp;     * @param p1 the first Vector2D.
+<i>103</i>&nbsp;     * @param p2 the second Vector2D.
+<i>104</i>&nbsp;     * @return tje normal of the two Vectors.
+<i>105</i>&nbsp;     */
+<i>106</i>&nbsp;    public static Vector2D calculateNormal(Vector2D p1, Vector2D p2)
+<i>107</i>&nbsp;    {
+<b class="fc"><i>108</i>&nbsp;        Vector2D vectorDifference = p2.subtract(p1);</b>
+<b class="fc"><i>109</i>&nbsp;        Vector2D result = vectorDifference.orthogonalize();</b>
+<b class="fc"><i>110</i>&nbsp;        double length = vectorDifference.length();</b>
+<b class="fc"><i>111</i>&nbsp;        result.applyScaling(1 / length);</b>
+<b class="fc"><i>112</i>&nbsp;        return result;</b>
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    private double square(double number)
+<i>116</i>&nbsp;    {
+<b class="fc"><i>117</i>&nbsp;        return Math.pow(number, 2);</b>
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    /**
+<i>121</i>&nbsp;     * Scales the Vector2D by the given constant.
+<i>122</i>&nbsp;     *
+<i>123</i>&nbsp;     * @param scalingAmount the amount to scale by.
+<i>124</i>&nbsp;     * @return the Vector2D after the scaling operation.
+<i>125</i>&nbsp;     */
+<i>126</i>&nbsp;    public Vector2D applyScaling(double scalingAmount)
+<i>127</i>&nbsp;    {
+<b class="fc"><i>128</i>&nbsp;        double x = this.x * scalingAmount;</b>
+<b class="fc"><i>129</i>&nbsp;        double y = this.y * scalingAmount;</b>
+<b class="fc"><i>130</i>&nbsp;        return new Vector2D(x, y);</b>
+<i>131</i>&nbsp;    }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    @Override
+<i>134</i>&nbsp;    public boolean equals(Object o)
+<i>135</i>&nbsp;    {
+<b class="nc"><i>136</i>&nbsp;        if (this == o)</b>
+<b class="nc"><i>137</i>&nbsp;            return true;</b>
+<b class="nc"><i>138</i>&nbsp;        if (o == null || getClass() != o.getClass())</b>
+<b class="nc"><i>139</i>&nbsp;            return false;</b>
+<i>140</i>&nbsp;
+<b class="nc"><i>141</i>&nbsp;        Vector2D vector = (Vector2D) o;</b>
+<i>142</i>&nbsp;
+<b class="nc"><i>143</i>&nbsp;        if (Double.compare(vector.x, x) != 0)</b>
+<b class="nc"><i>144</i>&nbsp;            return false;</b>
+<b class="nc"><i>145</i>&nbsp;        return Double.compare(vector.y, y) == 0;</b>
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    @Override
+<i>150</i>&nbsp;    public int hashCode()
+<i>151</i>&nbsp;    {
+<i>152</i>&nbsp;        int result;
+<i>153</i>&nbsp;        long temp;
+<b class="nc"><i>154</i>&nbsp;        temp = Double.doubleToLongBits(x);</b>
+<b class="nc"><i>155</i>&nbsp;        result = (int) (temp ^ (temp &gt;&gt;&gt; 32));</b>
+<b class="nc"><i>156</i>&nbsp;        temp = Double.doubleToLongBits(y);</b>
+<b class="nc"><i>157</i>&nbsp;        result = 31 * result + (int) (temp ^ (temp &gt;&gt;&gt; 32));</b>
+<b class="nc"><i>158</i>&nbsp;        return result;</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    @Override
+<i>162</i>&nbsp;    public String toString()
+<i>163</i>&nbsp;    {
+<b class="nc"><i>164</i>&nbsp;        return String.format(&quot;[%s]\n[%s]&quot;, x, y);</b>
+<i>165</i>&nbsp;    }
+<i>166</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

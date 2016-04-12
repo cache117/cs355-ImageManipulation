@@ -1,0 +1,147 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DrawableNullShape</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.view.drawing</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DrawableNullShape (cs355.view.drawing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DrawableNullShape</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (2/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (3/ 9)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.view.drawing;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cs355.model.drawing.NullShape;
+<i>4</i>&nbsp;import cs355.model.drawing.Shape;
+<i>5</i>&nbsp;import cs355.view.DrawingParameters;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import java.awt.*;
+<i>8</i>&nbsp;import java.awt.geom.Point2D;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;/**
+<i>11</i>&nbsp; * A DrawableShape that represents null.
+<i>12</i>&nbsp; */
+<i>13</i>&nbsp;public class DrawableNullShape extends DrawableShape
+<i>14</i>&nbsp;{
+<i>15</i>&nbsp;    /**
+<i>16</i>&nbsp;     * Creates a DrawableShape that does nothing. Avoids Null pointers.
+<i>17</i>&nbsp;     * @param color the color of the shape.
+<i>18</i>&nbsp;     */
+<i>19</i>&nbsp;    public DrawableNullShape(Color color)
+<i>20</i>&nbsp;    {
+<b class="fc"><i>21</i>&nbsp;        super(color);</b>
+<b class="fc"><i>22</i>&nbsp;    }</b>
+<i>23</i>&nbsp;    @Override
+<i>24</i>&nbsp;    protected void drawShape(DrawingParameters drawingParameters)
+<i>25</i>&nbsp;    {
+<i>26</i>&nbsp;
+<b class="nc"><i>27</i>&nbsp;    }</b>
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    @Override
+<i>30</i>&nbsp;    protected void calculatePointsFromShape(Shape shape)
+<i>31</i>&nbsp;    {
+<i>32</i>&nbsp;
+<b class="nc"><i>33</i>&nbsp;    }</b>
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    @Override
+<i>36</i>&nbsp;    public Shape getModelShape()
+<i>37</i>&nbsp;    {
+<b class="nc"><i>38</i>&nbsp;        return new NullShape();</b>
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    @Override
+<i>42</i>&nbsp;    public void drawShapeOutline(DrawingParameters drawingParameters)
+<i>43</i>&nbsp;    {
+<i>44</i>&nbsp;
+<b class="nc"><i>45</i>&nbsp;    }</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    @Override
+<i>48</i>&nbsp;    public Point2D.Double getHandleCenterPoint()
+<i>49</i>&nbsp;    {
+<b class="nc"><i>50</i>&nbsp;        return new Point2D.Double(0,0);</b>
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    @Override
+<i>54</i>&nbsp;    public void drawOutline(DrawingParameters drawingParameters)
+<i>55</i>&nbsp;    {
+<i>56</i>&nbsp;
+<b class="fc"><i>57</i>&nbsp;    }</b>
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    @Override
+<i>60</i>&nbsp;    protected void drawShapeHandle(Graphics2D graphics2D)
+<i>61</i>&nbsp;    {
+<i>62</i>&nbsp;
+<b class="nc"><i>63</i>&nbsp;    }</b>
+<i>64</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

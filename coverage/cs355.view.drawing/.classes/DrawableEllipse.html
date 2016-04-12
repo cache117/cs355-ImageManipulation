@@ -1,0 +1,154 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DrawableEllipse</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.view.drawing</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DrawableEllipse (cs355.view.drawing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DrawableEllipse</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94.1%
+  </span>
+  <span class="absValue">
+    (16/ 17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.view.drawing;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cs355.model.drawing.Ellipse;
+<i>4</i>&nbsp;import cs355.model.drawing.Shape;
+<i>5</i>&nbsp;import cs355.view.DrawingParameters;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import java.awt.*;
+<i>8</i>&nbsp;import java.awt.geom.Point2D;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;/**
+<i>11</i>&nbsp; * An objects that represents an ellipse. This takes care of all of the drawing and manipulation of ellipses on the screen.
+<i>12</i>&nbsp; */
+<i>13</i>&nbsp;public class DrawableEllipse extends DrawableRectangle
+<i>14</i>&nbsp;{
+<i>15</i>&nbsp;    /**
+<i>16</i>&nbsp;     * Creates a DrawableEllipse from an Ellipse.
+<i>17</i>&nbsp;     * @param ellipse the Ellipse.
+<i>18</i>&nbsp;     */
+<i>19</i>&nbsp;    @SuppressWarnings(&quot;WeakerAccess&quot;)
+<i>20</i>&nbsp;    public DrawableEllipse(Shape ellipse)
+<i>21</i>&nbsp;    {
+<b class="fc"><i>22</i>&nbsp;        super(ellipse);</b>
+<b class="fc"><i>23</i>&nbsp;    }</b>
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    /**
+<i>26</i>&nbsp;     * Creates a basic DrawableEllipse from a color.
+<i>27</i>&nbsp;     * @param color the color.
+<i>28</i>&nbsp;     */
+<i>29</i>&nbsp;    public DrawableEllipse(Color color)
+<i>30</i>&nbsp;    {
+<b class="fc"><i>31</i>&nbsp;        super(color);</b>
+<b class="fc"><i>32</i>&nbsp;    }</b>
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    @Override
+<i>35</i>&nbsp;    public void drawShape(DrawingParameters drawingParameters)
+<i>36</i>&nbsp;    {
+<i>37</i>&nbsp;        //Point2D.Double upperLeftPoint = calculateUpperLeftPoint();
+<b class="fc"><i>38</i>&nbsp;        drawingParameters.graphics2D.fillOval((int) (-getWidth() /  2.0), (int) (-getHeight() / 2.0), (int) getWidth(), (int) getHeight());</b>
+<b class="fc"><i>39</i>&nbsp;    }</b>
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    @Override
+<i>42</i>&nbsp;    protected void calculatePointsFromShape(Shape shape)
+<i>43</i>&nbsp;    {
+<b class="fc"><i>44</i>&nbsp;        Ellipse ellipse = (Ellipse) shape;</b>
+<b class="fc"><i>45</i>&nbsp;        setStartPoint(calculateUpperLeftFromCenter(ellipse.getCenter(), ellipse.getWidth(), ellipse.getHeight()));</b>
+<b class="fc"><i>46</i>&nbsp;        setEndPoint(calculateLowerRightFromCenter(ellipse.getCenter(), ellipse.getWidth(), ellipse.getHeight()));</b>
+<b class="fc"><i>47</i>&nbsp;    }</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    /**
+<i>50</i>&nbsp;     * Calculates the lower right point of the ellipse from the center, width, and height.
+<i>51</i>&nbsp;     * @param center the center of the ellipse.
+<i>52</i>&nbsp;     * @param width the width of the ellipse.
+<i>53</i>&nbsp;     * @param height the height of the ellipse.
+<i>54</i>&nbsp;     * @return the lower right point of the ellipse.
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    Point2D.Double calculateLowerRightFromCenter(Point2D.Double center, double width, double height)
+<i>57</i>&nbsp;    {
+<b class="fc"><i>58</i>&nbsp;        double x = (center.x + (width / 2.0));</b>
+<b class="fc"><i>59</i>&nbsp;        double y = (center.y + (height / 2.0));</b>
+<b class="fc"><i>60</i>&nbsp;        return new Point2D.Double(x, y);</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    @Override
+<i>64</i>&nbsp;    public Shape getModelShape()
+<i>65</i>&nbsp;    {
+<b class="fc"><i>66</i>&nbsp;        Ellipse ellipse = new Ellipse(getColor(), calculateCenterFromUpperLeft(), getWidth(), getHeight());</b>
+<b class="fc"><i>67</i>&nbsp;        if (getRotation() != 0.0)</b>
+<b class="nc"><i>68</i>&nbsp;            ellipse.setRotation(getRotation());</b>
+<b class="fc"><i>69</i>&nbsp;        return ellipse;</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

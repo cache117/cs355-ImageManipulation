@@ -1,0 +1,505 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SceneParser</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.model.scene</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SceneParser (cs355.model.scene)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SceneParser</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    79.2%
+  </span>
+  <span class="absValue">
+    (84/ 106)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SceneParser$EyeParse</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">SceneParser$InstParse</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80.7%
+  </span>
+  <span class="absValue">
+    (92/ 114)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.model.scene;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.awt.Color;
+<i>4</i>&nbsp;import java.io.File;
+<i>5</i>&nbsp;import java.io.FileInputStream;
+<i>6</i>&nbsp;import java.util.ArrayList;
+<i>7</i>&nbsp;import java.util.Scanner;
+<i>8</i>&nbsp;import java.util.logging.Level;
+<i>9</i>&nbsp;import java.util.logging.Logger;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;/**
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; * @author gavin
+<i>14</i>&nbsp; */
+<i>15</i>&nbsp;public class SceneParser {
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;	// Valid options for a camera (eye).
+<b class="fc"><i>18</i>&nbsp;	private static final char[] EYE_OPTS = { &#39;r&#39;, &#39;t&#39; };</b>
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;	// Valid options for an instance.
+<b class="fc"><i>21</i>&nbsp;	private static final char[] INST_OPTS = { &#39;c&#39;, &#39;r&#39;, &#39;s&#39;, &#39;t&#39; };</b>
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;	// The file that will be parsed.
+<i>24</i>&nbsp;	private final File file;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;	/**
+<i>27</i>&nbsp;	 * Basic constructor.
+<i>28</i>&nbsp;	 * @param file = the file to be parsed.
+<i>29</i>&nbsp;	 */
+<b class="fc"><i>30</i>&nbsp;	public SceneParser(File file) {</b>
+<b class="fc"><i>31</i>&nbsp;		this.file = file;</b>
+<b class="fc"><i>32</i>&nbsp;	}</b>
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;	/**
+<i>35</i>&nbsp;	 * Parse the file and build a scene from it.
+<i>36</i>&nbsp;	 * This method will use the ObjParser to open
+<i>37</i>&nbsp;	 * and parse .obj files, which are how we
+<i>38</i>&nbsp;	 * store models.
+<i>39</i>&nbsp;	 * @return the newly created scene.
+<i>40</i>&nbsp;	 * @throws java.lang.Exception when the file is invalid.
+<i>41</i>&nbsp;	 */
+<i>42</i>&nbsp;	public CS355Scene parse() throws Exception {
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;		// Build the scene and needed lists.
+<b class="fc"><i>45</i>&nbsp;		CS355Scene scene = new CS355Scene();</b>
+<b class="fc"><i>46</i>&nbsp;		ArrayList&lt;InstParse&gt; pairs = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>47</i>&nbsp;		ArrayList&lt;WireFrame&gt; models = new ArrayList&lt;&gt;();</b>
+<i>48</i>&nbsp;
+<b class="fc"><i>49</i>&nbsp;		try (Scanner s = new Scanner(file)) {</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;			String line;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;			// While there is input on the scanner...
+<b class="fc"><i>54</i>&nbsp;			while (s.hasNextLine()) {</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;				// Grab the next line.
+<b class="fc"><i>57</i>&nbsp;				line = s.nextLine();</b>
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;				// Valid lines have to be greater than 0 chars long.
+<b class="fc"><i>60</i>&nbsp;				if (line.length() &lt; 1) {</b>
+<b class="fc"><i>61</i>&nbsp;					continue;</b>
+<i>62</i>&nbsp;				}
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;				// Find out what type of line we&#39;re parsing.
+<b class="fc"><i>65</i>&nbsp;				switch (line.charAt(0)) {</b>
+<i>66</i>&nbsp;					case &#39;c&#39;:
+<b class="nc"><i>67</i>&nbsp;						throw new IllegalStateException(&quot;Color defined in root of scene description&quot;);</b>
+<i>68</i>&nbsp;					case &#39;e&#39;:
+<b class="fc"><i>69</i>&nbsp;						EyeParse eye = parseEye(line, s);</b>
+<b class="fc"><i>70</i>&nbsp;						scene.setCameraPosition(eye.pos);</b>
+<b class="fc"><i>71</i>&nbsp;						scene.setCameraRotation(eye.angle);</b>
+<b class="fc"><i>72</i>&nbsp;						break;</b>
+<i>73</i>&nbsp;					case &#39;i&#39;:
+<b class="fc"><i>74</i>&nbsp;						pairs.add(parseInstance(line, s));</b>
+<b class="fc"><i>75</i>&nbsp;						break;</b>
+<i>76</i>&nbsp;					case &#39;o&#39;:
+<b class="fc"><i>77</i>&nbsp;						models.add(parseObj(line));</b>
+<b class="fc"><i>78</i>&nbsp;						break;</b>
+<i>79</i>&nbsp;					case &#39;r&#39;:
+<b class="nc"><i>80</i>&nbsp;						throw new IllegalStateException(&quot;Rotation defined in root of scene description&quot;);</b>
+<i>81</i>&nbsp;					case &#39;s&#39;:
+<b class="nc"><i>82</i>&nbsp;						throw new IllegalStateException(&quot;Scale defined in root of scene description&quot;);</b>
+<i>83</i>&nbsp;					case &#39;t&#39;:
+<b class="nc"><i>84</i>&nbsp;						throw new IllegalStateException(&quot;Position defined in root of scene description&quot;);</b>
+<i>85</i>&nbsp;					default:
+<i>86</i>&nbsp;				}
+<i>87</i>&nbsp;			}
+<b class="fc"><i>88</i>&nbsp;		}</b>
+<b class="nc"><i>89</i>&nbsp;		catch(Exception ex) {</b>
+<b class="nc"><i>90</i>&nbsp;			Logger.getLogger(SceneParser.class.getName()).log(Level.SEVERE, null, ex);</b>
+<b class="nc"><i>91</i>&nbsp;			Exception e = new Exception(&quot;Invalid scene description&quot;, ex);</b>
+<b class="nc"><i>92</i>&nbsp;			throw e;</b>
+<b class="fc"><i>93</i>&nbsp;		}</b>
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;		Instance inst;
+<i>96</i>&nbsp;		int i;
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;		// Resolve object indices into the appropriate Instances.
+<b class="fc"><i>99</i>&nbsp;		for (InstParse ip : pairs) {</b>
+<b class="fc"><i>100</i>&nbsp;			i = ip.idx;</b>
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;			// This would be an invalid index.
+<b class="fc"><i>103</i>&nbsp;			if (i &gt;= models.size()) {</b>
+<b class="nc"><i>104</i>&nbsp;				throw new IllegalStateException(&quot;Invalid object index&quot;);</b>
+<i>105</i>&nbsp;			}
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;			// Set the Instance&#39;s model and add it to the scene.
+<b class="fc"><i>108</i>&nbsp;			inst = ip.inst;</b>
+<b class="fc"><i>109</i>&nbsp;			inst.setModel(models.get(i));</b>
+<b class="fc"><i>110</i>&nbsp;			scene.instances().add(inst);</b>
+<b class="fc"><i>111</i>&nbsp;		}</b>
+<i>112</i>&nbsp;
+<b class="fc"><i>113</i>&nbsp;		return scene;</b>
+<i>114</i>&nbsp;	}
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;	/**
+<i>117</i>&nbsp;	 * Parse a color from one line of text.
+<i>118</i>&nbsp;	 * @param line = the line of text to parse.
+<i>119</i>&nbsp;	 * @return the resulting color as INT_RGB.
+<i>120</i>&nbsp;	 */
+<i>121</i>&nbsp;	private Color parseColor(String line) {
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;		// Split the line on whitespace.
+<b class="fc"><i>124</i>&nbsp;		String[] elems = line.split(&quot;\\s+&quot;);</b>
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;		// Create a default color.
+<b class="fc"><i>127</i>&nbsp;		int[] rgb = new int[3];</b>
+<b class="fc"><i>128</i>&nbsp;		rgb[0] = rgb[1] = rgb[2] = 255;</b>
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;		// Error checking.
+<b class="fc"><i>131</i>&nbsp;		if (elems.length != 4) {</b>
+<b class="nc"><i>132</i>&nbsp;			throw new IllegalStateException(&quot;Invalid color&quot;);</b>
+<i>133</i>&nbsp;		}
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;		// Iterate over the split line and parse the integers.
+<i>136</i>&nbsp;		// Remember that the first element is the char at the
+<i>137</i>&nbsp;		// beginning of the line, so we skip that one.
+<b class="fc"><i>138</i>&nbsp;		for (int i = 0; i &lt; 3; ++i) {</b>
+<b class="fc"><i>139</i>&nbsp;			rgb[i] = Integer.parseInt(elems[i + 1]);</b>
+<i>140</i>&nbsp;		}
+<i>141</i>&nbsp;
+<b class="fc"><i>142</i>&nbsp;		return new Color(rgb[0], rgb[1], rgb[2]);</b>
+<i>143</i>&nbsp;	}
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;	/**
+<i>146</i>&nbsp;	 * Parse a rotation (angle and vector) from one
+<i>147</i>&nbsp;	 * line of text.
+<i>148</i>&nbsp;	 * @param line = the line of text to parse.
+<i>149</i>&nbsp;	 * @return the angle to rotate as a double. The
+<i>150</i>&nbsp;	 *		   rotation vector is implicitly [0, 1, 0].
+<i>151</i>&nbsp;	 */
+<i>152</i>&nbsp;	private double parseRotation(String line) {
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;		// Split the line on whitespace.
+<b class="fc"><i>155</i>&nbsp;		String[] elems = line.split(&quot;\\s+&quot;);</b>
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;		// Error checking.
+<b class="fc"><i>158</i>&nbsp;		if (elems.length != 2) {</b>
+<b class="nc"><i>159</i>&nbsp;			throw new IllegalStateException(&quot;Invalid rotation&quot;);</b>
+<i>160</i>&nbsp;		}
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;		// Pull the double angle out of the split line.
+<i>163</i>&nbsp;		// Remember that the first element is the char
+<i>164</i>&nbsp;		// at the beginning, so we skip that one.
+<b class="fc"><i>165</i>&nbsp;		return Double.parseDouble(elems[1]);</b>
+<i>166</i>&nbsp;	}
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;	/**
+<i>169</i>&nbsp;	 * Parse a point from one line of text.
+<i>170</i>&nbsp;	 * @param line = the line of text to parse.
+<i>171</i>&nbsp;	 * @return the resulting Point3D.
+<i>172</i>&nbsp;	 */
+<i>173</i>&nbsp;	private Point3D parsePosition(String line) {
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;		// Split the line on whitespace.
+<b class="fc"><i>176</i>&nbsp;		String[] elems = line.split(&quot;\\s+&quot;);</b>
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;		// Error checking.
+<b class="fc"><i>179</i>&nbsp;		if (elems.length != 4) {</b>
+<b class="nc"><i>180</i>&nbsp;			throw new IllegalStateException(&quot;Invalid rotation&quot;);</b>
+<i>181</i>&nbsp;		}
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;		// Pull the various elements out of the split line.
+<i>184</i>&nbsp;		// Remember that the first element is the char at
+<i>185</i>&nbsp;		// the beginning, so we skip that one.
+<b class="fc"><i>186</i>&nbsp;		double x = Double.parseDouble(elems[1]);</b>
+<b class="fc"><i>187</i>&nbsp;		double y = Double.parseDouble(elems[2]);</b>
+<b class="fc"><i>188</i>&nbsp;		double z = Double.parseDouble(elems[3]);</b>
+<i>189</i>&nbsp;
+<b class="fc"><i>190</i>&nbsp;		return new Point3D(x, y, z);</b>
+<i>191</i>&nbsp;	}
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;	/**
+<i>194</i>&nbsp;	 * Parse a .obj file to create a WireFrame.
+<i>195</i>&nbsp;	 * @param line = the line of text to parse.
+<i>196</i>&nbsp;	 *				 We only need the filename.
+<i>197</i>&nbsp;	 * @return the WireFrame parsed from the file.
+<i>198</i>&nbsp;	 * @throws Exception if the .obj file is invalid.
+<i>199</i>&nbsp;	 */
+<i>200</i>&nbsp;	private WireFrame parseObj(String line) throws Exception {
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;		// Find the starting index of the filename.
+<b class="fc"><i>203</i>&nbsp;		int i = 1;</b>
+<b class="fc"><i>204</i>&nbsp;		char c = line.charAt(i);</b>
+<b class="fc"><i>205</i>&nbsp;		while (c != &#39;&quot;&#39;) {</b>
+<b class="fc"><i>206</i>&nbsp;			c = line.charAt(++i);</b>
+<i>207</i>&nbsp;		}
+<b class="fc"><i>208</i>&nbsp;		++i;</b>
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;		// Get the filename.
+<b class="fc"><i>211</i>&nbsp;		String name = line.substring(i, line.indexOf(&#39;&quot;&#39;, i + 1));</b>
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;		// The filename is relative, so we need to
+<i>214</i>&nbsp;		// use the parent file to resolve it.
+<b class="fc"><i>215</i>&nbsp;		File f = new File(file.getParentFile(), name);</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;		// Parse the thing.
+<b class="fc"><i>218</i>&nbsp;		ObjParser op = new ObjParser(new FileInputStream(f));</b>
+<b class="fc"><i>219</i>&nbsp;		return op.parse();</b>
+<i>220</i>&nbsp;	}
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;	/**
+<i>223</i>&nbsp;	 * Parse a camera position and orientation from some lines of text.
+<i>224</i>&nbsp;	 * This will continue parsing more lines, not just its own. That&#39;s
+<i>225</i>&nbsp;	 * because the eye has position &lt;i&gt;and&lt;/i&gt; rotation.
+<i>226</i>&nbsp;	 * @param line = the first line of text to parse.
+<i>227</i>&nbsp;	 * @param s = the scanner (we may need more lines).
+<i>228</i>&nbsp;	 * @return the parsed camera position and orientation.
+<i>229</i>&nbsp;	 */
+<i>230</i>&nbsp;	private EyeParse parseEye(String line, Scanner s) {
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;		// Create a default eye.
+<b class="fc"><i>233</i>&nbsp;		EyeParse eye = new EyeParse();</b>
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;		// While there is input *and* the
+<i>236</i>&nbsp;		// input is valid for the eye...
+<b class="fc"><i>237</i>&nbsp;		while (s.hasNextLine() &amp;&amp; nextIsValid(s, EYE_OPTS)) {</b>
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;			// Grab the next line.
+<b class="fc"><i>240</i>&nbsp;			line = s.nextLine();</b>
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;			// Valid lines are greater than 2 chars long.
+<b class="fc"><i>243</i>&nbsp;			if (line.length() &lt;= 2) {</b>
+<b class="nc"><i>244</i>&nbsp;				continue;</b>
+<i>245</i>&nbsp;			}
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;			// Figure out what kind of line
+<i>248</i>&nbsp;			// it is and act accordingly.
+<b class="fc"><i>249</i>&nbsp;			switch (line.charAt(0)) {</b>
+<i>250</i>&nbsp;				case &#39;r&#39;:
+<b class="nc"><i>251</i>&nbsp;					eye.angle = parseRotation(line);</b>
+<b class="nc"><i>252</i>&nbsp;					break;</b>
+<i>253</i>&nbsp;				case &#39;t&#39;:
+<b class="fc"><i>254</i>&nbsp;					eye.pos = parsePosition(line);</b>
+<b class="fc"><i>255</i>&nbsp;					break;</b>
+<i>256</i>&nbsp;			}
+<i>257</i>&nbsp;		}
+<i>258</i>&nbsp;
+<b class="fc"><i>259</i>&nbsp;		return eye;</b>
+<i>260</i>&nbsp;	}
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;	/**
+<i>263</i>&nbsp;	 * Parse an instance from some lines of text. This
+<i>264</i>&nbsp;	 * will continue parsing more lines, not just its
+<i>265</i>&nbsp;	 * own. That&#39;s because an instance has position,
+<i>266</i>&nbsp;	 * rotation, color, a model, and scale.
+<i>267</i>&nbsp;	 * @param line = the first line of text to parse.
+<i>268</i>&nbsp;	 * @param s = the Scanner with more input.
+<i>269</i>&nbsp;	 * @return an InstParse that we&#39;ll use later to
+<i>270</i>&nbsp;	 *		   resolve the reference to a WireFrame.
+<i>271</i>&nbsp;	 */
+<i>272</i>&nbsp;	private InstParse parseInstance(String line, Scanner s) {
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;		// Create a default instance.
+<b class="fc"><i>275</i>&nbsp;		Instance inst = new Instance();</b>
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;		// Split the first line on whitespace.
+<b class="fc"><i>278</i>&nbsp;		String[] elems = line.split(&quot;\\s+&quot;);</b>
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;		// Error checking.
+<b class="fc"><i>281</i>&nbsp;		if (elems.length != 2) {</b>
+<b class="nc"><i>282</i>&nbsp;			throw new IllegalStateException(&quot;Invalid instance declaration&quot;);</b>
+<i>283</i>&nbsp;		}
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;		// Get the WireFrame index from the line.
+<b class="fc"><i>286</i>&nbsp;		int index = Integer.parseInt(elems[1]) - 1;</b>
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;		// While we have valid input.
+<b class="fc"><i>289</i>&nbsp;		while (s.hasNextLine() &amp;&amp; nextIsValid(s, INST_OPTS)) {</b>
+<b class="fc"><i>290</i>&nbsp;			line = s.nextLine();</b>
+<b class="fc"><i>291</i>&nbsp;			if (line.length() &lt;= 2) {</b>
+<b class="nc"><i>292</i>&nbsp;				continue;</b>
+<i>293</i>&nbsp;			}
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;			// Figure out what kind of line
+<i>296</i>&nbsp;			// it is and act accordingly.
+<b class="fc"><i>297</i>&nbsp;			switch (line.charAt(0)) {</b>
+<i>298</i>&nbsp;				case &#39;c&#39;:
+<b class="fc"><i>299</i>&nbsp;					inst.setColor(parseColor(line));</b>
+<b class="fc"><i>300</i>&nbsp;					break;</b>
+<i>301</i>&nbsp;				case &#39;r&#39;:
+<b class="fc"><i>302</i>&nbsp;					inst.setRotAngle(parseRotation(line));</b>
+<b class="fc"><i>303</i>&nbsp;					break;</b>
+<i>304</i>&nbsp;				case &#39;s&#39;:
+<b class="nc"><i>305</i>&nbsp;					elems = line.split(&quot;\\s+&quot;);</b>
+<b class="nc"><i>306</i>&nbsp;					if (elems.length != 2) {</b>
+<b class="nc"><i>307</i>&nbsp;						throw new IllegalStateException(&quot;Invalid scale&quot;);</b>
+<i>308</i>&nbsp;					}
+<b class="nc"><i>309</i>&nbsp;					inst.setScale(Double.parseDouble(elems[1]));</b>
+<b class="nc"><i>310</i>&nbsp;					break;</b>
+<i>311</i>&nbsp;				case &#39;t&#39;:
+<b class="fc"><i>312</i>&nbsp;					inst.setPosition(parsePosition(line));</b>
+<b class="fc"><i>313</i>&nbsp;					break;</b>
+<i>314</i>&nbsp;			}
+<i>315</i>&nbsp;		}
+<i>316</i>&nbsp;
+<b class="fc"><i>317</i>&nbsp;		return new InstParse(inst, index);</b>
+<i>318</i>&nbsp;	}
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;	/**
+<i>321</i>&nbsp;	 * Figures out if the next line of input is valid
+<i>322</i>&nbsp;	 * for the current parse situation. It does so
+<i>323</i>&nbsp;	 * &lt;i&gt;without&lt;/i&gt; advancing the Scanner, which
+<i>324</i>&nbsp;	 * is very important.
+<i>325</i>&nbsp;	 * @param s = the Scanner with the input.
+<i>326</i>&nbsp;	 * @param options = the valid options.
+<i>327</i>&nbsp;	 * @return true if the next line has valid
+<i>328</i>&nbsp;	 *		   input, false otherwise.
+<i>329</i>&nbsp;	 */
+<i>330</i>&nbsp;	private boolean nextIsValid(Scanner s, char[] options) {
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;		// Set up the flag.
+<b class="fc"><i>333</i>&nbsp;		boolean valid = false;</b>
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;		// Loop over the options and test each.
+<b class="fc"><i>336</i>&nbsp;		for (int i = 0; !valid &amp;&amp; i &lt; options.length; ++i) {</b>
+<b class="fc"><i>337</i>&nbsp;			valid = s.hasNext(options[i] + &quot;.*&quot;);</b>
+<i>338</i>&nbsp;		}
+<i>339</i>&nbsp;
+<b class="fc"><i>340</i>&nbsp;		return valid;</b>
+<i>341</i>&nbsp;	}
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;	/**
+<i>344</i>&nbsp;	 * Small class that lets us resolve references
+<i>345</i>&nbsp;	 * to WireFrames at the end of parsing.
+<i>346</i>&nbsp;	 */
+<i>347</i>&nbsp;	private class InstParse {
+<i>348</i>&nbsp;
+<i>349</i>&nbsp;		// The instance.
+<i>350</i>&nbsp;		public Instance inst;
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;		// Index of the Instance&#39;s WireFrame.
+<i>353</i>&nbsp;		public int idx;
+<i>354</i>&nbsp;
+<b class="fc"><i>355</i>&nbsp;		public InstParse(Instance inst, int idx) {</b>
+<b class="fc"><i>356</i>&nbsp;			this.inst = inst;</b>
+<b class="fc"><i>357</i>&nbsp;			this.idx = idx;</b>
+<b class="fc"><i>358</i>&nbsp;		}</b>
+<i>359</i>&nbsp;	}
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;	/**
+<i>362</i>&nbsp;	 * Small class that allows me to parse the default camera.
+<i>363</i>&nbsp;	 */
+<i>364</i>&nbsp;	private class EyeParse {
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;		// The position of the camera.
+<i>367</i>&nbsp;		public Point3D pos;
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;		// The rotation angle (around [0, 1, 0]).
+<i>370</i>&nbsp;		public double angle;
+<i>371</i>&nbsp;
+<b class="fc"><i>372</i>&nbsp;		public EyeParse() {</b>
+<b class="fc"><i>373</i>&nbsp;			this.pos = new Point3D();</b>
+<b class="fc"><i>374</i>&nbsp;			this.angle = 0.0;</b>
+<b class="fc"><i>375</i>&nbsp;		}</b>
+<i>376</i>&nbsp;	}
+<i>377</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

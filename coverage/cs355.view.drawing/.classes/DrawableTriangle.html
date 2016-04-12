@@ -1,0 +1,254 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DrawableTriangle</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.view.drawing</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DrawableTriangle (cs355.view.drawing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DrawableTriangle</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (15/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.8%
+  </span>
+  <span class="absValue">
+    (59/ 68)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.view.drawing;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import cs355.GUIFunctions;
+<i>4</i>&nbsp;import cs355.model.drawing.*;
+<i>5</i>&nbsp;import cs355.model.drawing.Shape;
+<i>6</i>&nbsp;import cs355.view.DrawingParameters;
+<i>7</i>&nbsp;import cs355.view.ObjectParameters;
+<i>8</i>&nbsp;import cs355.view.drawing.util.Transform;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import java.awt.*;
+<i>11</i>&nbsp;import java.awt.geom.AffineTransform;
+<i>12</i>&nbsp;import java.awt.geom.Point2D;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;/**
+<i>15</i>&nbsp; * An objects that represents a triangle. This takes care of all of the drawing and manipulation of triangles on the screen.
+<i>16</i>&nbsp; */
+<b class="fc"><i>17</i>&nbsp;public class DrawableTriangle extends DrawableShape</b>
+<i>18</i>&nbsp;{
+<i>19</i>&nbsp;    private Point2D.Double middlePoint;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    public DrawableTriangle(Shape triangle)
+<i>22</i>&nbsp;    {
+<b class="fc"><i>23</i>&nbsp;        super(triangle);</b>
+<b class="fc"><i>24</i>&nbsp;    }</b>
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public DrawableTriangle(Color color)
+<i>27</i>&nbsp;    {
+<b class="fc"><i>28</i>&nbsp;        super(color);</b>
+<b class="fc"><i>29</i>&nbsp;        GUIFunctions.printf(&quot;Click for each vertex.&quot;);</b>
+<b class="fc"><i>30</i>&nbsp;    }</b>
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    @Override
+<i>33</i>&nbsp;    public void drawShape(DrawingParameters drawingParameters)
+<i>34</i>&nbsp;    {
+<b class="fc"><i>35</i>&nbsp;        drawingParameters.graphics2D.fillPolygon(getXPoints(), getYPoints(), getExpectedPoints());</b>
+<b class="fc"><i>36</i>&nbsp;    }</b>
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    @Override
+<i>39</i>&nbsp;    public void drawShapeOutline(DrawingParameters drawingParameters)
+<i>40</i>&nbsp;    {
+<b class="nc"><i>41</i>&nbsp;        drawingParameters.graphics2D.drawPolygon(getXPoints(), getYPoints(), getExpectedPoints());</b>
+<b class="nc"><i>42</i>&nbsp;    }</b>
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    @Override
+<i>45</i>&nbsp;    protected void calculatePointsFromShape(Shape shape)
+<i>46</i>&nbsp;    {
+<b class="fc"><i>47</i>&nbsp;        Triangle triangle = (Triangle) shape;</b>
+<i>48</i>&nbsp;
+<b class="fc"><i>49</i>&nbsp;        setStartPoint(Transform.getWorldPointFromObjectPoint(triangle.getA(), new ObjectParameters(getCenterPoint(), getRotation())));</b>
+<b class="fc"><i>50</i>&nbsp;        setMiddlePoint(Transform.getWorldPointFromObjectPoint(triangle.getB(), new ObjectParameters(getCenterPoint(), getRotation())));</b>
+<b class="fc"><i>51</i>&nbsp;        setEndPoint(Transform.getWorldPointFromObjectPoint(triangle.getC(), new ObjectParameters(getCenterPoint(), getRotation())));</b>
+<b class="fc"><i>52</i>&nbsp;        setNumberOfActualPoints(3);</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;//        setStartPoint(triangle.getA());
+<i>55</i>&nbsp;//        setMiddlePoint(triangle.getB());
+<i>56</i>&nbsp;//        setEndPoint(triangle.getC());
+<b class="fc"><i>57</i>&nbsp;    }</b>
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    @Override
+<i>60</i>&nbsp;    protected int getExpectedPoints()
+<i>61</i>&nbsp;    {
+<b class="fc"><i>62</i>&nbsp;        return 3;</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    @Override
+<i>66</i>&nbsp;    public Shape getModelShape()
+<i>67</i>&nbsp;    {
+<b class="fc"><i>68</i>&nbsp;        Triangle triangle = new Triangle(getColor(), getCenterPoint(),</b>
+<b class="fc"><i>69</i>&nbsp;                Transform.getObjectPointFromWorldPoint(getStartPoint(), new ObjectParameters(getCenterPoint(), getRotation())),</b>
+<b class="fc"><i>70</i>&nbsp;                Transform.getObjectPointFromWorldPoint(getMiddlePoint(), new ObjectParameters(getCenterPoint(), getRotation())),</b>
+<b class="fc"><i>71</i>&nbsp;                Transform.getObjectPointFromWorldPoint(getEndPoint(), new ObjectParameters(getCenterPoint(), getRotation())));</b>
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;//        Triangle triangle = new Triangle(getColor(), getCenterPoint(), getStartPoint(), getMiddlePoint(), getEndPoint());
+<b class="fc"><i>74</i>&nbsp;        if (getRotation() != 0.0)</b>
+<b class="nc"><i>75</i>&nbsp;            triangle.setRotation(getRotation());</b>
+<b class="fc"><i>76</i>&nbsp;        return triangle;</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    private double getAveragePoint(double p1, double p2, double p3)
+<i>80</i>&nbsp;    {
+<b class="fc"><i>81</i>&nbsp;        return (p1 + p2 + p3) / 3;</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    private Point2D.Double calculateCenterPoint()
+<i>85</i>&nbsp;    {
+<b class="fc"><i>86</i>&nbsp;        double x = getAveragePoint(getStartPoint().x, getMiddlePoint().x, getEndPoint().x);</b>
+<b class="fc"><i>87</i>&nbsp;        double y = getAveragePoint(getStartPoint().y, getMiddlePoint().y, getEndPoint().y);</b>
+<b class="fc"><i>88</i>&nbsp;        return new Point2D.Double(x, y);</b>
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public void addPoint(Point2D.Double point, CS355Drawing model)
+<i>92</i>&nbsp;    {
+<b class="fc"><i>93</i>&nbsp;        switch (getNumberOfActualPoints())</b>
+<i>94</i>&nbsp;        {
+<i>95</i>&nbsp;            case 0:
+<b class="fc"><i>96</i>&nbsp;                setStartPoint(point);</b>
+<b class="fc"><i>97</i>&nbsp;                setMiddlePoint(point);</b>
+<b class="fc"><i>98</i>&nbsp;                setEndPoint(point);</b>
+<b class="fc"><i>99</i>&nbsp;                setNumberOfActualPoints(1);</b>
+<i>100</i>&nbsp;
+<b class="fc"><i>101</i>&nbsp;                GUIFunctions.printf(&quot;Click to set second vertex.&quot;);</b>
+<b class="fc"><i>102</i>&nbsp;                break;</b>
+<i>103</i>&nbsp;            case 1:
+<b class="fc"><i>104</i>&nbsp;                setMiddlePoint(point);</b>
+<b class="fc"><i>105</i>&nbsp;                setNumberOfActualPoints(2);</b>
+<i>106</i>&nbsp;
+<b class="fc"><i>107</i>&nbsp;                GUIFunctions.printf(&quot;Click to set third vertex.&quot;);</b>
+<b class="fc"><i>108</i>&nbsp;                break;</b>
+<i>109</i>&nbsp;            case 2:
+<b class="fc"><i>110</i>&nbsp;                setEndPoint(point);</b>
+<b class="fc"><i>111</i>&nbsp;                setCenterPoint(calculateCenterPoint());</b>
+<i>112</i>&nbsp;
+<b class="fc"><i>113</i>&nbsp;                model.addShape(getModelShape());</b>
+<b class="fc"><i>114</i>&nbsp;                this.clearPoints();</b>
+<b class="fc"><i>115</i>&nbsp;                GUIFunctions.printf(&quot;Click to set first vertex.&quot;);</b>
+<b class="fc"><i>116</i>&nbsp;                break;</b>
+<i>117</i>&nbsp;            default:
+<b class="nc"><i>118</i>&nbsp;                assert false;</b>
+<i>119</i>&nbsp;        }
+<b class="fc"><i>120</i>&nbsp;    }</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    private Point2D.Double getMiddlePoint()
+<i>123</i>&nbsp;    {
+<b class="fc"><i>124</i>&nbsp;        return middlePoint;</b>
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    private void setMiddlePoint(Point2D.Double middlePoint)
+<i>128</i>&nbsp;    {
+<b class="fc"><i>129</i>&nbsp;        this.middlePoint = middlePoint;</b>
+<b class="fc"><i>130</i>&nbsp;    }</b>
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    private int[] getXPoints()
+<i>133</i>&nbsp;    {
+<b class="fc"><i>134</i>&nbsp;        int[] xPoints = new int[getExpectedPoints()];</b>
+<b class="fc"><i>135</i>&nbsp;        xPoints[0] = (int) getStartPoint().x;</b>
+<b class="fc"><i>136</i>&nbsp;        xPoints[1] = (int) getMiddlePoint().x;</b>
+<b class="fc"><i>137</i>&nbsp;        xPoints[2] = (int) getEndPoint().x;</b>
+<b class="fc"><i>138</i>&nbsp;        return xPoints;</b>
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    private int[] getYPoints()
+<i>142</i>&nbsp;    {
+<b class="fc"><i>143</i>&nbsp;        int[] yPoints = new int[getExpectedPoints()];</b>
+<b class="fc"><i>144</i>&nbsp;        yPoints[0] = (int) getStartPoint().y;</b>
+<b class="fc"><i>145</i>&nbsp;        yPoints[1] = (int) getMiddlePoint().y;</b>
+<b class="fc"><i>146</i>&nbsp;        yPoints[2] = (int) getEndPoint().y;</b>
+<b class="fc"><i>147</i>&nbsp;        return yPoints;</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    private double getGreatestDistanceFromCenter()
+<i>151</i>&nbsp;    {
+<i>152</i>&nbsp;        //TODO this is exactly the same as Triangle$getGreatestDistanceFromCenter()
+<b class="nc"><i>153</i>&nbsp;        double firstDistance = Point2D.distance(getStartPoint().x, getStartPoint().y, getCenterPoint().x, getCenterPoint().y);</b>
+<b class="nc"><i>154</i>&nbsp;        double middleDistance = Point2D.distance(getMiddlePoint().x, getMiddlePoint().y, getCenterPoint().x, getCenterPoint().y);</b>
+<b class="nc"><i>155</i>&nbsp;        double endDistance = Point2D.distance(getEndPoint().x, getEndPoint().y, getCenterPoint().x, getCenterPoint().y);</b>
+<b class="nc"><i>156</i>&nbsp;        return Math.max(firstDistance, Math.max(middleDistance, endDistance));</b>
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    @Override
+<i>160</i>&nbsp;    protected void applyTransformationToGraphics(DrawingParameters drawingParameters)
+<i>161</i>&nbsp;    {
+<b class="fc"><i>162</i>&nbsp;        AffineTransform affineTransform = new AffineTransform();</b>
+<b class="fc"><i>163</i>&nbsp;        drawingParameters.graphics2D.setTransform(affineTransform);</b>
+<b class="fc"><i>164</i>&nbsp;    }</b>
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    @Override
+<i>167</i>&nbsp;    public Point2D.Double getHandleCenterPoint()
+<i>168</i>&nbsp;    {
+<b class="nc"><i>169</i>&nbsp;        return getStartPoint();</b>
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>

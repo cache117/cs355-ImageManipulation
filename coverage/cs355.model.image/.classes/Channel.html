@@ -1,0 +1,169 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Channel</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">cs355.model.image</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Channel (cs355.model.image)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Channel</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    82.6%
+  </span>
+  <span class="absValue">
+    (19/ 23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package cs355.model.image;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;/**
+<i>4</i>&nbsp; * This class represents one color channel of an image.
+<i>5</i>&nbsp; * It is package-visible for a reason. Do not make it public.
+<i>6</i>&nbsp; * @author gavin
+<i>7</i>&nbsp; */
+<i>8</i>&nbsp;class Channel {
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;	// The data for this Channel. It is one-dimensional
+<i>11</i>&nbsp;	// for efficiency, and the getters and setters handle
+<i>12</i>&nbsp;	// the conversion automatically.
+<i>13</i>&nbsp;	private final int[] pixels;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;	// Obvious.
+<i>16</i>&nbsp;	private final int width;
+<i>17</i>&nbsp;	private final int height;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;	/**
+<i>20</i>&nbsp;	 * Basic constructor that contructs a channel for
+<i>21</i>&nbsp;	 * an image of the provided width and height.
+<i>22</i>&nbsp;	 * @param width the image width.
+<i>23</i>&nbsp;	 * @param height the image height.
+<i>24</i>&nbsp;	 */
+<b class="fc"><i>25</i>&nbsp;	public Channel(int width, int height) {</b>
+<b class="fc"><i>26</i>&nbsp;		pixels = new int[width * height];</b>
+<b class="fc"><i>27</i>&nbsp;		this.width = width;</b>
+<b class="fc"><i>28</i>&nbsp;		this.height = height;</b>
+<b class="fc"><i>29</i>&nbsp;		for (int i = 0; i &lt; pixels.length; ++i) {</b>
+<b class="fc"><i>30</i>&nbsp;			pixels[i] = 255;</b>
+<i>31</i>&nbsp;		}
+<b class="fc"><i>32</i>&nbsp;	}</b>
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;	/**
+<i>35</i>&nbsp;	 * Gets the data in this Channel at a particular pixel.
+<i>36</i>&nbsp;	 * @param x the x coordinate of the pixel.
+<i>37</i>&nbsp;	 * @param y the y coordinate of the pixel.
+<i>38</i>&nbsp;	 * @return the data in the Channel at the specified coordinates.
+<i>39</i>&nbsp;	 */
+<i>40</i>&nbsp;	public int getPixel(int x, int y) {
+<b class="fc"><i>41</i>&nbsp;		validateBounds(x, y);</b>
+<b class="fc"><i>42</i>&nbsp;		return pixels[width * y + x];</b>
+<i>43</i>&nbsp;	}
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;	/**
+<i>46</i>&nbsp;	 * Sets the data for a particular pixel in this Channel.
+<i>47</i>&nbsp;	 * @param x the x coordinate of the pixel.
+<i>48</i>&nbsp;	 * @param y the y coordinate of the pixel.
+<i>49</i>&nbsp;	 * @param data the new data for the pixel.
+<i>50</i>&nbsp;	 */
+<i>51</i>&nbsp;	public void setPixel(int x, int y, int data) {
+<b class="fc"><i>52</i>&nbsp;		validateBounds(x, y);</b>
+<b class="fc"><i>53</i>&nbsp;		validateData(data);</b>
+<b class="fc"><i>54</i>&nbsp;		pixels[width * y + x] = data;</b>
+<b class="fc"><i>55</i>&nbsp;	}</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;	/**
+<i>58</i>&nbsp;	 * Validates coordinates from the user. Throws an Exception
+<i>59</i>&nbsp;	 * with an appropriate message if they are not valid.
+<i>60</i>&nbsp;	 * @param x the x coordinate to test.
+<i>61</i>&nbsp;	 * @param y the y coordinate to test.
+<i>62</i>&nbsp;	 */
+<i>63</i>&nbsp;	private void validateBounds(int x, int y) {
+<b class="fc"><i>64</i>&nbsp;		if (x &gt;= width) {</b>
+<b class="nc"><i>65</i>&nbsp;			throw new IndexOutOfBoundsException(&quot;Index is greater than the width of the image&quot;);</b>
+<i>66</i>&nbsp;		}
+<b class="fc"><i>67</i>&nbsp;		if (y &gt;= height) {</b>
+<b class="nc"><i>68</i>&nbsp;			throw new IndexOutOfBoundsException(&quot;Index is greater than the height of the image&quot;);</b>
+<i>69</i>&nbsp;		}
+<b class="fc"><i>70</i>&nbsp;	}</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;	/**
+<i>73</i>&nbsp;	 * Validates data from the user. Throws an Exception
+<i>74</i>&nbsp;	 * with an appropriate message if it is not valid.
+<i>75</i>&nbsp;	 * @param data the data to test.
+<i>76</i>&nbsp;	 */
+<i>77</i>&nbsp;	private void validateData(int data) {
+<b class="fc"><i>78</i>&nbsp;		if (data &gt; 255) {</b>
+<b class="nc"><i>79</i>&nbsp;			throw new IllegalStateException(&quot;Value for image channel is greater than 255&quot;);</b>
+<i>80</i>&nbsp;		}
+<b class="fc"><i>81</i>&nbsp;		if (data &lt; 0) {</b>
+<b class="nc"><i>82</i>&nbsp;			throw new IllegalStateException(&quot;Value for image channel is less than 0&quot;);</b>
+<i>83</i>&nbsp;		}
+<b class="fc"><i>84</i>&nbsp;	}</b>
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-11 23:19</div>
+</div>
+</body>
+</html>
