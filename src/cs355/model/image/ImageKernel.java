@@ -42,16 +42,25 @@ public class ImageKernel
         return colorChannel;
     }
 
-    public int[] medianBlur(int[] rgb)
+    public int[] medianBlur(int[] medianValue)
     {
         int redMedian = getMedianValue(getColorChannel(RGB_RED));
         int greenMedian = getMedianValue(getColorChannel(RGB_GREEN));
         int blueMedian = getMedianValue(getColorChannel(RGB_BLUE));
         //get closest actual pixel (least square distance (sum of square distances of each color. Like an xyz)
-        rgb[RGB_RED] = redMedian;
-        rgb[RGB_GREEN] = greenMedian;
-        rgb[RGB_BLUE] = blueMedian;
-        return rgb;
+        medianValue[RGB_RED] = redMedian;
+        medianValue[RGB_GREEN] = greenMedian;
+        medianValue[RGB_BLUE] = blueMedian;
+        int[] closestValue = getM00();
+        double lowestSquareDistance = getSquaredDistance(closestValue, medianValue);
+        for (int i = 1; i < pixels.size(); ++i)
+        {
+            int[] currentPixel = pixels.get(i);
+            double squareDistance = getSquaredDistance(currentPixel, medianValue);
+            if (squareDistance < lowestSquareDistance)
+                closestValue = currentPixel;
+        }
+        return closestValue;
     }
 
     private int getMedianValue(List<Integer> colorChannel)
@@ -59,6 +68,11 @@ public class ImageKernel
         Collections.sort(colorChannel);
         int medianIndex = 4;
         return colorChannel.get(medianIndex);
+    }
+
+    private double getSquaredDistance(int[] pixel, int[] medianValue)
+    {
+        return square(pixel[RGB_RED] - medianValue[RGB_RED]) + square(pixel[RGB_GREEN] - medianValue[RGB_GREEN]) + square(pixel[RGB_BLUE] - medianValue[RGB_BLUE]);
     }
 
     public int[] uniformBlur(int[] rgb)
@@ -96,7 +110,7 @@ public class ImageKernel
         float sobelY = sobelKernelY(m00, m10, m20, m02, m12, m22);
         float newBrightness = (float) Math.sqrt(square(sobelX) + square(sobelY));
         newBrightness = clipValue(newBrightness, 0f, 1f);
-        int value = (int) (newBrightness * 256);
+        int value = (int) (newBrightness * 255);
         rgb[RGB_RED] = value;
         rgb[RGB_GREEN] = value;
         rgb[RGB_BLUE] = value;
