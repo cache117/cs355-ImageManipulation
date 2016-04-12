@@ -5,6 +5,7 @@ import cs355.view.DrawingViewer;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.File;
 import java.util.Observer;
 
 /**
@@ -12,9 +13,10 @@ import java.util.Observer;
  */
 public class DrawingImage extends CS355Image
 {
-    private static final int HSB_HUE = 0, HSB_SATURATION = 1, HSB_BRIGHTNESS = 2;
-    private static final int RGB_RED = 0, RGB_GREEN = 1, RGB_BLUE = 2;
+    public static final int HSB_HUE = 0, HSB_SATURATION = 1, HSB_BRIGHTNESS = 2;
+    public static final int RGB_RED = 0, RGB_GREEN = 1, RGB_BLUE = 2;
     private boolean drawImage;
+    private DrawingImage imageBuffer;
 
     public DrawingImage()
     {
@@ -53,21 +55,25 @@ public class DrawingImage extends CS355Image
     {
         if (isImageDrawable())
         {
+            int[] rgb = new int[3];
             for (int y = 0; y < getHeight(); ++y)
             {
                 for (int x = 0; x < getWidth(); ++x)
                 {
                     if (isPixelOnEdge(x, y))
-                        setPixel(x, y, new int[]{0, 0, 0});
+                        imageBuffer.setPixel(x, y, new int[]{0, 0, 0});
                     else
                     {
                         ImageKernel imageKernel = getSurroundingPixels(x, y);
-                        int[] newPixels = imageKernel.edgeDetection();
-                        setPixel(x, y, newPixels);
+                        int value = imageKernel.edgeDetection();
+                        rgb[RGB_RED] = value;
+                        rgb[RGB_GREEN] = value;
+                        rgb[RGB_BLUE] = value;
+                        imageBuffer.setPixel(x, y, rgb);
                     }
                 }
             }
-            this.notifyObservers();
+            this.updateImageFromImageBuffer();
         }
     }
 
@@ -76,7 +82,7 @@ public class DrawingImage extends CS355Image
     {
         if (isImageDrawable())
         {
-            this.notifyObservers();
+            this.updateImageFromImageBuffer();
         }
     }
 
@@ -90,16 +96,16 @@ public class DrawingImage extends CS355Image
                 for (int x = 0; x < getWidth() - 1; ++x)
                 {
                     if (isPixelOnEdge(x, y))
-                        setPixel(x, y, new int[]{0, 0, 0});
+                        imageBuffer.setPixel(x, y, new int[]{0, 0, 0});
                     else
                     {
                         ImageKernel imageKernel = getSurroundingPixels(x, y);
                         int[] newPixels = imageKernel.medianBlur();
-                        setPixel(x, y, newPixels);
+                        imageBuffer.setPixel(x, y, newPixels);
                     }
                 }
             }
-            this.notifyObservers();
+            this.updateImageFromImageBuffer();
         }
     }
 
@@ -113,16 +119,16 @@ public class DrawingImage extends CS355Image
                 for (int x = 0; x < getWidth() - 1; ++x)
                 {
                     if (isPixelOnEdge(x, y))
-                        setPixel(x, y, new int[]{0, 0, 0});
+                        imageBuffer.setPixel(x, y, new int[]{0, 0, 0});
                     else
                     {
                         ImageKernel imageKernel = getSurroundingPixels(x, y);
                         int[] newPixels = imageKernel.uniformBlur();
-                        setPixel(x, y, newPixels);
+                        imageBuffer.setPixel(x, y, newPixels);
                     }
                 }
             }
-            this.notifyObservers();
+            this.updateImageFromImageBuffer();
         }
     }
 
@@ -131,13 +137,15 @@ public class DrawingImage extends CS355Image
     {
         if (isImageDrawable())
         {
+            int[] rgb = new int[3];
+            float[] hsb = new float[3];
             for (int y = 0; y < getHeight(); ++y)
             {
                 for (int x = 0; x < getWidth(); ++x)
                 {
-                    float[] hsb = getPixelHSB(x, y);
+                    hsb = getPixelHSB(x, y, rgb, hsb);
                     hsb[HSB_SATURATION] = 0;
-                    setPixelHSB(x, y, hsb);
+                    setPixelHSB(x, y, rgb, hsb);
                 }
             }
             this.notifyObservers();
@@ -149,18 +157,20 @@ public class DrawingImage extends CS355Image
     {
         if (isImageDrawable())
         {
+            int[] rgb = new int[3];
+            float[] hsb = new float[3];
             for (int y = 0; y < getHeight(); ++y)
             {
                 for (int x = 0; x < getWidth(); ++x)
                 {
-                    float[] hsb = getPixelHSB(x, y);
-                    float newBrightness = (float) ((Math.pow((double) ((amount + 100f) / 100f), 4) * (hsb[HSB_BRIGHTNESS] - 128f)) + 128f);
+                    hsb = getPixelHSB(x, y, rgb, hsb);
+                    float newBrightness = (float) ((Math.pow((double) ((amount + 100f) / 100f), 4) * (hsb[HSB_BRIGHTNESS] - .5f)) + .5f);
                     hsb[HSB_BRIGHTNESS] = newBrightness;
                     if (hsb[HSB_BRIGHTNESS] > 1.0)
                         hsb[HSB_BRIGHTNESS] = 1.0f;
                     else if (hsb[HSB_BRIGHTNESS] < 0.0)
                         hsb[HSB_BRIGHTNESS] = 0.0f;
-                    setPixelHSB(x, y, hsb);
+                    setPixelHSB(x, y, rgb, hsb);
                 }
             }
             this.notifyObservers();
@@ -173,35 +183,34 @@ public class DrawingImage extends CS355Image
         if (isImageDrawable())
         {
             float brightness = amount / 100f;
+            int[] rgb = new int[3];
+            float[] hsb = new float[3];
             for (int y = 0; y < getHeight(); ++y)
             {
                 for (int x = 0; x < getWidth(); ++x)
                 {
-                    float[] hsb = getPixelHSB(x, y);
+                    hsb = getPixelHSB(x, y, rgb, hsb);
                     hsb[HSB_BRIGHTNESS] += brightness;
                     if (hsb[HSB_BRIGHTNESS] > 1.0)
                         hsb[HSB_BRIGHTNESS] = 1.0f;
                     else if (hsb[HSB_BRIGHTNESS] < 0.0)
                         hsb[HSB_BRIGHTNESS] = 0.0f;
-                    setPixelHSB(x, y, hsb);
+                    setPixelHSB(x, y, rgb, hsb);
                 }
             }
             this.notifyObservers();
         }
     }
 
-    private float[] getPixelHSB(int x, int y)
+    private float[] getPixelHSB(int x, int y, int[] rgb, float[] hsb)
     {
-        int[] rgb = new int[3];
-        float[] hsb = new float[3];
         getPixel(x, y, rgb);
         Color.RGBtoHSB(rgb[RGB_RED], rgb[RGB_GREEN], rgb[RGB_BLUE], hsb);
         return hsb;
     }
 
-    private void setPixelHSB(int x, int y, float[] hsb)
+    private void setPixelHSB(int x, int y, int[] rgb, float[] hsb)
     {
-        int[] rgb = new int[3];
         Color c = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
         rgb[0] = c.getRed();
         rgb[1] = c.getGreen();
@@ -214,6 +223,12 @@ public class DrawingImage extends CS355Image
     {
         super.setChanged();
         super.notifyObservers();
+    }
+
+    private void updateImageFromImageBuffer()
+    {
+        this.setPixels(imageBuffer.getImage());
+        this.notifyObservers();
     }
 
     private ImageKernel getSurroundingPixels(int x, int y)
@@ -460,5 +475,30 @@ public class DrawingImage extends CS355Image
         super.addObserver(o);
         if (o instanceof DrawingViewer)
             ((DrawingViewer) o).setImage(this);
+    }
+
+    @Override
+    public boolean open(File f)
+    {
+        if (!super.open(f))
+            return false;
+        else
+        {
+            imageBuffer = new DrawingImage(this);
+            return true;
+        }
+    }
+
+    public DrawingImage(int width, int height)
+    {
+        super(width, height);
+        imageBuffer = new DrawingImage(width, height);
+        imageBuffer.setPixels(this);
+    }
+
+    private DrawingImage(DrawingImage image)
+    {
+        this();
+        this.setPixels(image.getImage());
     }
 }
