@@ -56,19 +56,17 @@ public class DrawingImage extends CS355Image
         if (isImageDrawable())
         {
             int[] rgb = new int[3];
+            int[] black = new int[]{0, 0, 0};
             for (int y = 0; y < getHeight(); ++y)
             {
                 for (int x = 0; x < getWidth(); ++x)
                 {
                     if (isPixelOnEdge(x, y))
-                        imageBuffer.setPixel(x, y, new int[]{0, 0, 0});
+                        imageBuffer.setPixel(x, y, black);
                     else
                     {
                         ImageKernel imageKernel = getSurroundingPixels(x, y);
-                        int value = imageKernel.edgeDetection();
-                        rgb[RGB_RED] = value;
-                        rgb[RGB_GREEN] = value;
-                        rgb[RGB_BLUE] = value;
+                        rgb = imageKernel.edgeDetection(rgb);
                         imageBuffer.setPixel(x, y, rgb);
                     }
                 }
@@ -82,6 +80,22 @@ public class DrawingImage extends CS355Image
     {
         if (isImageDrawable())
         {
+            int[] rgb = new int[3];
+            int[] black = new int[]{0, 0, 0};
+            for (int y = 0; y < getHeight(); ++y)
+            {
+                for (int x = 0; x < getWidth(); ++x)
+                {
+                    if (isPixelOnEdge(x, y))
+                        imageBuffer.setPixel(x, y, black);
+                    else
+                    {
+                        ImageKernel imageKernel = getSurroundingPixels(x, y);
+                        rgb = imageKernel.sharpen(rgb);
+                        imageBuffer.setPixel(x, y, rgb);
+                    }
+                }
+            }
             this.updateImageFromImageBuffer();
         }
     }
@@ -91,17 +105,19 @@ public class DrawingImage extends CS355Image
     {
         if (isImageDrawable())
         {
+            int[] rgb = new int[3];
+            int[] black = new int[]{0, 0, 0};
             for (int y = 0; y < getHeight() - 1; ++y)
             {
                 for (int x = 0; x < getWidth() - 1; ++x)
                 {
                     if (isPixelOnEdge(x, y))
-                        imageBuffer.setPixel(x, y, new int[]{0, 0, 0});
+                        imageBuffer.setPixel(x, y, black);
                     else
                     {
                         ImageKernel imageKernel = getSurroundingPixels(x, y);
-                        int[] newPixels = imageKernel.medianBlur();
-                        imageBuffer.setPixel(x, y, newPixels);
+                        rgb = imageKernel.medianBlur(rgb);
+                        imageBuffer.setPixel(x, y, rgb);
                     }
                 }
             }
@@ -114,17 +130,19 @@ public class DrawingImage extends CS355Image
     {
         if (isImageDrawable())
         {
+            int[] rgb = new int[3];
+            int[] black = new int[]{0, 0, 0};
             for (int y = 0; y < getHeight(); ++y)
             {
                 for (int x = 0; x < getWidth() - 1; ++x)
                 {
                     if (isPixelOnEdge(x, y))
-                        imageBuffer.setPixel(x, y, new int[]{0, 0, 0});
+                        imageBuffer.setPixel(x, y, black);
                     else
                     {
                         ImageKernel imageKernel = getSurroundingPixels(x, y);
-                        int[] newPixels = imageKernel.uniformBlur();
-                        imageBuffer.setPixel(x, y, newPixels);
+                        rgb = imageKernel.uniformBlur(rgb);
+                        imageBuffer.setPixel(x, y, rgb);
                     }
                 }
             }
@@ -166,10 +184,7 @@ public class DrawingImage extends CS355Image
                     hsb = getPixelHSB(x, y, rgb, hsb);
                     float newBrightness = (float) ((Math.pow((double) ((amount + 100f) / 100f), 4) * (hsb[HSB_BRIGHTNESS] - .5f)) + .5f);
                     hsb[HSB_BRIGHTNESS] = newBrightness;
-                    if (hsb[HSB_BRIGHTNESS] > 1.0)
-                        hsb[HSB_BRIGHTNESS] = 1.0f;
-                    else if (hsb[HSB_BRIGHTNESS] < 0.0)
-                        hsb[HSB_BRIGHTNESS] = 0.0f;
+                    hsb[HSB_BRIGHTNESS] = clipValue(hsb[HSB_BRIGHTNESS], 0.0f, 1.0f);
                     setPixelHSB(x, y, rgb, hsb);
                 }
             }
@@ -191,10 +206,7 @@ public class DrawingImage extends CS355Image
                 {
                     hsb = getPixelHSB(x, y, rgb, hsb);
                     hsb[HSB_BRIGHTNESS] += brightness;
-                    if (hsb[HSB_BRIGHTNESS] > 1.0)
-                        hsb[HSB_BRIGHTNESS] = 1.0f;
-                    else if (hsb[HSB_BRIGHTNESS] < 0.0)
-                        hsb[HSB_BRIGHTNESS] = 0.0f;
+                    hsb[HSB_BRIGHTNESS] = clipValue(hsb[HSB_BRIGHTNESS], 0.0f, 1.0f);
                     setPixelHSB(x, y, rgb, hsb);
                 }
             }
@@ -211,11 +223,28 @@ public class DrawingImage extends CS355Image
 
     private void setPixelHSB(int x, int y, int[] rgb, float[] hsb)
     {
-        Color c = Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
-        rgb[0] = c.getRed();
-        rgb[1] = c.getGreen();
-        rgb[2] = c.getBlue();
+        Color c = Color.getHSBColor(hsb[HSB_HUE], hsb[HSB_SATURATION], hsb[HSB_BRIGHTNESS]);
+        rgb[RGB_RED] = c.getRed();
+        rgb[RGB_GREEN] = c.getGreen();
+        rgb[RGB_BLUE] = c.getBlue();
         setPixel(x, y, rgb);
+    }
+
+    public static double clipValue(double value, double lowerBound, double upperBound)
+    {
+        assert lowerBound < upperBound;
+        return (double) clipValue((float) value, (float) lowerBound, (float) upperBound);
+    }
+
+    public static float clipValue(float value, float lowerBound, float upperBound)
+    {
+        assert lowerBound < upperBound;
+        if (value < lowerBound)
+            return lowerBound;
+        else if (value > upperBound)
+            return upperBound;
+        else
+            return value;
     }
 
     @Override

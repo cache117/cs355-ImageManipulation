@@ -42,13 +42,16 @@ public class ImageKernel
         return colorChannel;
     }
 
-    public int[] medianBlur()
+    public int[] medianBlur(int[] rgb)
     {
         int redMedian = getMedianValue(getColorChannel(RGB_RED));
         int greenMedian = getMedianValue(getColorChannel(RGB_GREEN));
         int blueMedian = getMedianValue(getColorChannel(RGB_BLUE));
         //get closest actual pixel (least square distance (sum of square distances of each color. Like an xyz)
-        return new int[] { redMedian, greenMedian, blueMedian };
+        rgb[RGB_RED] = redMedian;
+        rgb[RGB_GREEN] = greenMedian;
+        rgb[RGB_BLUE] = blueMedian;
+        return rgb;
     }
 
     private int getMedianValue(List<Integer> colorChannel)
@@ -58,12 +61,15 @@ public class ImageKernel
         return colorChannel.get(medianIndex);
     }
 
-    public int[] uniformBlur()
+    public int[] uniformBlur(int[] rgb)
     {
         int redMean = getMeanValue(getColorChannel(RGB_RED));
         int greenMean = getMeanValue(getColorChannel(RGB_GREEN));
         int blueMean = getMeanValue(getColorChannel(RGB_BLUE));
-        return new int[] {redMean, greenMean, blueMean};
+        rgb[RGB_RED] = redMean;
+        rgb[RGB_GREEN] = greenMean;
+        rgb[RGB_BLUE] = blueMean;
+        return rgb;
     }
 
     private int getMeanValue(List<Integer> colorChannel)
@@ -76,7 +82,7 @@ public class ImageKernel
         return (int) Math.round(total / 9d);
     }
 
-    public int edgeDetection()
+    public int[] edgeDetection(int[] rgb)
     {
         float m00 = getBrightnessFromRGB(getM00());
         float m01 = getBrightnessFromRGB(getM01());
@@ -89,11 +95,12 @@ public class ImageKernel
         float sobelX = sobelKernelX(m00, m20, m01, m21, m02, m22);
         float sobelY = sobelKernelY(m00, m10, m20, m02, m12, m22);
         float newBrightness = (float) Math.sqrt(square(sobelX) + square(sobelY));
-        if (newBrightness > 1.0f)
-            newBrightness = 1.0f;
-        else if (newBrightness < 0.0f)
-            newBrightness = 0.0f;
-        return (int) (newBrightness * 256);
+        newBrightness = clipValue(newBrightness, 0f, 1f);
+        int value = (int) (newBrightness * 256);
+        rgb[RGB_RED] = value;
+        rgb[RGB_GREEN] = value;
+        rgb[RGB_BLUE] = value;
+        return rgb;
     }
 
     private float getBrightnessFromRGB(int[] rgb)
@@ -120,6 +127,17 @@ public class ImageKernel
             float m02, float m12, float m22)
     {
         return ((-1 * m00) + (-2 * m10) + (-1 * m20) + m02+ (2 * m12) + m22) / 8f;
+    }
+
+    public int[] sharpen(int[] rgb)
+    {
+        for (int i = 0; i < 3; ++i)
+        {
+            double value = ((6 * getM11()[i]) + (-1 * getM01()[i]) + (-1 * getM10()[i]) + (-1 * getM21()[i]) + (-1 * getM12()[i])) /2.0;
+            value = clipValue(value, 0d, 255d);
+            rgb[i] = (int) value;
+        }
+        return rgb;
     }
 
     public int[] getM00()
