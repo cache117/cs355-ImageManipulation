@@ -15,6 +15,7 @@ public class DrawingImage extends CS355Image
 {
     public static final int HSB_HUE = 0, HSB_SATURATION = 1, HSB_BRIGHTNESS = 2;
     public static final int RGB_RED = 0, RGB_GREEN = 1, RGB_BLUE = 2;
+    private static final int[] RGB_BLACK = new int[]{0,0,0};
     private boolean drawImage;
     private DrawingImage imageBuffer;
 
@@ -56,13 +57,12 @@ public class DrawingImage extends CS355Image
         if (isImageDrawable())
         {
             int[] rgb = new int[3];
-            int[] black = new int[]{0, 0, 0};
             for (int y = 0; y < getHeight(); ++y)
             {
                 for (int x = 0; x < getWidth(); ++x)
                 {
                     if (isPixelOnEdge(x, y))
-                        imageBuffer.setPixel(x, y, black);
+                        imageBuffer.setPixel(x, y, RGB_BLACK);
                     else
                     {
                         ImageKernel imageKernel = getSurroundingPixels(x, y);
@@ -81,13 +81,12 @@ public class DrawingImage extends CS355Image
         if (isImageDrawable())
         {
             int[] rgb = new int[3];
-            int[] black = new int[]{0, 0, 0};
             for (int y = 0; y < getHeight(); ++y)
             {
                 for (int x = 0; x < getWidth(); ++x)
                 {
                     if (isPixelOnEdge(x, y))
-                        imageBuffer.setPixel(x, y, black);
+                        imageBuffer.setPixel(x, y, RGB_BLACK);
                     else
                     {
                         ImageKernel imageKernel = getSurroundingPixels(x, y);
@@ -106,13 +105,12 @@ public class DrawingImage extends CS355Image
         if (isImageDrawable())
         {
             int[] rgb = new int[3];
-            int[] black = new int[]{0, 0, 0};
             for (int y = 0; y < getHeight() - 1; ++y)
             {
                 for (int x = 0; x < getWidth() - 1; ++x)
                 {
                     if (isPixelOnEdge(x, y))
-                        imageBuffer.setPixel(x, y, black);
+                        imageBuffer.setPixel(x, y, RGB_BLACK);
                     else
                     {
                         ImageKernel imageKernel = getSurroundingPixels(x, y);
@@ -131,13 +129,12 @@ public class DrawingImage extends CS355Image
         if (isImageDrawable())
         {
             int[] rgb = new int[3];
-            int[] black = new int[]{0, 0, 0};
             for (int y = 0; y < getHeight(); ++y)
             {
                 for (int x = 0; x < getWidth() - 1; ++x)
                 {
                     if (isPixelOnEdge(x, y))
-                        imageBuffer.setPixel(x, y, black);
+                        imageBuffer.setPixel(x, y, RGB_BLACK);
                     else
                     {
                         ImageKernel imageKernel = getSurroundingPixels(x, y);

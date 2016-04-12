@@ -44,15 +44,16 @@ public class ImageKernel
 
     public int[] medianBlur(int[] medianValue)
     {
-        int redMedian = getMedianValue(getColorChannel(RGB_RED));
-        int greenMedian = getMedianValue(getColorChannel(RGB_GREEN));
-        int blueMedian = getMedianValue(getColorChannel(RGB_BLUE));
-        //get closest actual pixel (least square distance (sum of square distances of each color. Like an xyz)
-        medianValue[RGB_RED] = redMedian;
-        medianValue[RGB_GREEN] = greenMedian;
-        medianValue[RGB_BLUE] = blueMedian;
+        medianValue[RGB_RED] = getMedianValue(getColorChannel(RGB_RED));
+        medianValue[RGB_GREEN] = getMedianValue(getColorChannel(RGB_GREEN));
+        medianValue[RGB_BLUE] = getMedianValue(getColorChannel(RGB_BLUE));
+        return getClosestActualPixelToMedian(medianValue);
+    }
+
+    private int[] getClosestActualPixelToMedian(int[] medianValue)
+    {
         int[] closestValue = getM00();
-        double lowestSquareDistance = getSquaredDistance(closestValue, medianValue);
+        int lowestSquareDistance = getSquaredDistance(closestValue, medianValue);
         for (int i = 1; i < pixels.size(); ++i)
         {
             int[] currentPixel = pixels.get(i);
@@ -70,19 +71,16 @@ public class ImageKernel
         return colorChannel.get(medianIndex);
     }
 
-    private double getSquaredDistance(int[] pixel, int[] medianValue)
+    private int getSquaredDistance(int[] pixel, int[] medianValue)
     {
         return square(pixel[RGB_RED] - medianValue[RGB_RED]) + square(pixel[RGB_GREEN] - medianValue[RGB_GREEN]) + square(pixel[RGB_BLUE] - medianValue[RGB_BLUE]);
     }
 
     public int[] uniformBlur(int[] rgb)
     {
-        int redMean = getMeanValue(getColorChannel(RGB_RED));
-        int greenMean = getMeanValue(getColorChannel(RGB_GREEN));
-        int blueMean = getMeanValue(getColorChannel(RGB_BLUE));
-        rgb[RGB_RED] = redMean;
-        rgb[RGB_GREEN] = greenMean;
-        rgb[RGB_BLUE] = blueMean;
+        rgb[RGB_RED] = getMeanValue(getColorChannel(RGB_RED));
+        rgb[RGB_GREEN] = getMeanValue(getColorChannel(RGB_GREEN));
+        rgb[RGB_BLUE] = getMeanValue(getColorChannel(RGB_BLUE));
         return rgb;
     }
 
@@ -93,7 +91,7 @@ public class ImageKernel
         {
             total += each;
         }
-        return (int) Math.round(total / 9d);
+        return (int) (total / 9d);
     }
 
     public int[] edgeDetection(int[] rgb)
@@ -124,7 +122,12 @@ public class ImageKernel
 
     private static float square(float number)
     {
-        return (float) Math.pow(number, 2);
+        return number * number;
+    }
+
+    private static int square(int number)
+    {
+        return number * number;
     }
 
     private static float sobelKernelX(
@@ -133,21 +136,21 @@ public class ImageKernel
             float m02, float m22
     )
     {
-        return ((-1 * m00) + (-2 * m01) + (-1 * m02) + m20 + (2 * m21) + m22) / 8f;
+        return ((-1f * m00) + (-2f * m01) + (-1f * m02) + m20 + (2f * m21) + m22) / 8f;
     }
 
     private static float sobelKernelY(
             float m00, float m10, float m20,
             float m02, float m12, float m22)
     {
-        return ((-1 * m00) + (-2 * m10) + (-1 * m20) + m02+ (2 * m12) + m22) / 8f;
+        return ((-1f * m00) + (-2f * m10) + (-1f * m20) + m02+ (2f * m12) + m22) / 8f;
     }
 
     public int[] sharpen(int[] rgb)
     {
         for (int i = 0; i < 3; ++i)
         {
-            double value = ((6 * getM11()[i]) + (-1 * getM01()[i]) + (-1 * getM10()[i]) + (-1 * getM21()[i]) + (-1 * getM12()[i])) /2.0;
+            double value = ((6d * getM11()[i]) + (-1d * getM01()[i]) + (-1d * getM10()[i]) + (-1d * getM21()[i]) + (-1d * getM12()[i])) /2.0d;
             value = clipValue(value, 0d, 255d);
             rgb[i] = (int) value;
         }
